@@ -1,11 +1,25 @@
 import React from "react";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import { Gear, PersonFill } from "react-bootstrap-icons";
 
 function Home() {
+  const messages = [{ message: "ciao" }, { message: "come va?" }];
+
   return (
     <>
       <Container>
+        {messages.map((msg, index) => (
+          <Row className="d-flex flex-row-reverse justify-content-center mb-1">
+            <Col key={index} sm={2}>
+              <Card className="mt-5 bg-secondary">
+                <Card.Body>
+                  <Card.Text>{msg.message}</Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        ))}
+
         <Row>
           <Col sm={2}>
             <Row>

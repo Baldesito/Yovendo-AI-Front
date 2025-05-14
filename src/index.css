@@ -1,28 +1,7 @@
-body{
-color: black;
+body {
+  background-color: rgb(33, 33, 33);
 }
 
-/* --- Style Nav Bar---*/
-.nav-bar{
-justify-content: space-around;
-}
-
-
-.home{
- margin-top: 40px;
-};
-
-/* --- STILE DELLA SIDEBAR --- */
-.side-bar {
-  border-radius: 15px;
-  margin-right: 0;
-padding: 0;
-}
-
-
-/* --- STILE DEL contenuto prencipale --- */
-.contenuto-p{
-  border-radius: none;
-  margin-left: -12px;
-  border-left: none;
+p {
+  color: white;
 }

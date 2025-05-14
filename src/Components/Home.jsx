@@ -1,34 +1,37 @@
 import React from "react";
-import { Card, Col, Container, Row } from "react-bootstrap";
-import "../index.css";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Gear, PersonFill } from "react-bootstrap-icons";
 
-
-function Home(){
-    return ( 
+function Home() {
+  return (
     <>
-
-         <Container className="home">
+      <Container>
         <Row>
-            <Col xs= {3}>
-          <Card className="side-bar">
-            <Card.Body>
-                <h1>Side bar</h1>
-            </Card.Body>
-          </Card>
+          <Col sm={2}>
+            <Row>
+              <Col sm={1}>
+                <Button variant="outline-secondary">
+                  <Gear color="white"></Gear>
+                  Impostazioni
+                </Button>
+                <Button variant="outline-secondary" className="mt-3">
+                  <PersonFill color="white"></PersonFill>
+                  Accedi
+                </Button>
+              </Col>
+            </Row>
           </Col>
-            <Col md={9}>
-          <Card className="contenuto-p">
-            <Card.Body>
-                <h1>Contenuto Prencipale</h1>
-            </Card.Body>
-          </Card>
+          <Col>
+            <Form.Label htmlFor="chat" className="text-white fs-1">
+              {" "}
+              Benvenuto
+            </Form.Label>
+            <Form.Control type="text" id="chat" placeholder="Fai una domanda" />
           </Col>
-          </Row>
-            
-        </Container>
+        </Row>
+      </Container>
     </>
-    )
-   
+  );
 }
 
 export default Home;

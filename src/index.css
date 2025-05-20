@@ -352,11 +352,12 @@ a{
 
 .chat-message.client {
   justify-content: flex-start;
-  background-color: #2d3748;
+
 }
 
 .chat-message.system {
   justify-content: flex-end;
+  background-color:#2d3748;
 }
 
 .message-bubble {

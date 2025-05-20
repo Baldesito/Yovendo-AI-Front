@@ -1,16 +1,22 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import autoprefixer from 'autoprefixer';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  css: {
+    postcss: {
+      plugins: [
+        autoprefixer(),
+      ],
+    },
+  },
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8080', 
+        target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
-        // Aggiungi il logging per debug
         configure: (proxy) => {
           proxy.on('error', (err) => {
             console.log('Proxy error:', err);
@@ -21,21 +27,19 @@ export default defineConfig({
           proxy.on('proxyRes', (proxyRes, req) => {
             console.log('Received Response:', proxyRes.statusCode, req.url);
           });
-        }
-      }
+        },
+      },
     },
     hmr: {
-      overlay: false
-    }
+      overlay: false,
+    },
   },
   build: {
-    // Ottimizzazioni per ridurre l'uso di memoria
     minify: 'terser',
     chunkSizeWarningLimit: 1600,
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          // Strategia più granulare per i chunks
           if (id.includes('node_modules')) {
             if (id.includes('react') || id.includes('react-dom')) {
               return 'react';
@@ -43,16 +47,14 @@ export default defineConfig({
             if (id.includes('react-router')) {
               return 'router';
             }
-            // Tutte le altre dipendenze vendor
             return 'vendor';
           }
-        }
-      }
+        },
+      },
     },
-    // Disabilita source maps in produzione per risparmiare memoria
-    sourcemap: false
+    sourcemap: false,
   },
   esbuild: {
-    logOverride: { 'this-is-undefined-in-esm': 'silent' }
-  }
-})
+    logOverride: { 'this-is-undefined-in-esm': 'silent' },
+  },
+});

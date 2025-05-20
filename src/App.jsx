@@ -8,6 +8,7 @@ import './App.css';
 import './index.css';
 import { checkServerHealth, getCurrentUser } from './Components/Dashboard/API1';
 import Dashboard from './Components/Dashboard';
+import ProfileDropdown from './Components/ProfiloDrpDown';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -81,7 +82,7 @@ function App() {
             />
             <Route 
               path="/profile" 
-              element={user ? <Profile user={user} /> : <Navigate to="/" />} 
+              element={user ? <ProfileDropdown user={user} /> : <Navigate to="/" />} 
             />
             {/* Rotta di fallback */}
             <Route path="*" element={<Navigate to="/" />} />

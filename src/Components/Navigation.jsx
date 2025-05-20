@@ -31,7 +31,7 @@ const Navigation = () => {
         <Container>
           <Navbar.Brand href="/">
             <span className="nome-sito">Yovendo-AI</span>
-            <img src="/src/assets/yovendo-ai.svg" alt="Logo" className="logo" />
+            <img src="/src./assets/yovendo-ai.svg" alt="Logo" className="logo" />
           </Navbar.Brand>
 
           <Navbar.Toggle aria-controls="basic-navbar-nav" />

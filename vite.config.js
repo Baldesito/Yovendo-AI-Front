@@ -11,14 +11,14 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
         // Aggiungi il logging per debug
-        configure: (proxy) => {
-          proxy.on('error', (err) => {
+        configure: (proxy, _options) => {
+          proxy.on('error', (err, _req, _res) => {
             console.log('Proxy error:', err);
           });
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on('proxyReq', (proxyReq, req, _res) => {
             console.log('Sending Request:', req.method, req.url);
           });
-          proxy.on('proxyRes', (proxyRes, req) => {
+          proxy.on('proxyRes', (proxyRes, req, _res) => {
             console.log('Received Response:', proxyRes.statusCode, req.url);
           });
         }
@@ -29,19 +29,28 @@ export default defineConfig({
     }
   },
   build: {
-    // Aumenta il limite per evitare il warning
+    // Ottimizzazioni per ridurre l'uso di memoria
+    minify: 'terser',
     chunkSizeWarningLimit: 1600,
     rollupOptions: {
       output: {
-        manualChunks: {
-          // Separa le dipendenze vendor
-          vendor: ['react', 'react-dom'],
-          // Separa le librerie router se usi React Router
-          router: ['react-router-dom'],
-          // Se usi altre librerie, aggiungile qui
+        manualChunks: (id) => {
+          // Strategia più granulare per i chunks
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom')) {
+              return 'react';
+            }
+            if (id.includes('react-router')) {
+              return 'router';
+            }
+            // Tutte le altre dipendenze vendor
+            return 'vendor';
+          }
         }
       }
-    }
+    },
+    // Disabilita source maps in produzione per risparmiare memoria
+    sourcemap: false
   },
   esbuild: {
     logOverride: { 'this-is-undefined-in-esm': 'silent' }

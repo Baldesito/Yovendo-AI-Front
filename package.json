@@ -5,9 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build": "vite build --mode production",
+    "build:vercel": "NODE_OPTIONS='--max_old_space_size=4096' vite build"
+ 
   },
   "dependencies": {
     "bootstrap": "^5.3.6",

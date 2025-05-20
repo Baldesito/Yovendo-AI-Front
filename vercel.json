@@ -1,0 +1,13 @@
+{
+  "build": {
+    "env": {
+      "NODE_ENV": "production"
+    },
+    "cache": {
+      "build": false
+    }
+  },
+  "engines": {
+    "node": "18"
+  }
+}

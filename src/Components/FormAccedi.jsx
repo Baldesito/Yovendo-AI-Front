@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Form, Alert } from "react-bootstrap";
+import { Modal, Button, Form, Alert, Spinner } from "react-bootstrap";
+import { enhancedFetch } from "./API"; // Importa enhancedFetch dal file API aggiornato
 
 const FormAccedi = ({ show, onHide, onLogin }) => {
   const [isLogin, setIsLogin] = useState(true);
@@ -11,23 +12,50 @@ const FormAccedi = ({ show, onHide, onLogin }) => {
   const [organizzazioni, setOrganizzazioni] = useState([]);
   const [organizzazioneId, setOrganizzazioneId] = useState("");
   const [message, setMessage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [serverStatus, setServerStatus] = useState('online'); // 'online', 'connecting', 'offline'
+
+  // Verifica lo stato del server 
+  useEffect(() => {
+    const checkServerStatus = async () => {
+      try {
+        setServerStatus('connecting');
+        await enhancedFetch('/health');
+        setServerStatus('online');
+      } catch (error) {
+        console.error("Problema nella connessione al server:", error);
+        setServerStatus('offline');
+      }
+    };
+
+    if (show) {
+      checkServerStatus();
+    }
+  }, [show]);
 
   // Carica le organizzazioni al montaggio del componente
   useEffect(() => {
     const fetchOrganizzazioni = async () => {
+      if (!show) return;
+      
       try {
-        const response = await fetch("/api/organizzazioni");
-        if (response.ok) {
-          const data = await response.json();
-          setOrganizzazioni(data);
-        }
+        setIsLoading(true);
+        const data = await enhancedFetch('/organizzazioni');
+        setOrganizzazioni(data);
       } catch (error) {
         console.error("Errore nel caricamento delle organizzazioni:", error);
+        setMessage({ 
+          type: "warning", 
+          text: "Non è stato possibile caricare le organizzazioni. " + 
+                (error.message || "Verifica la tua connessione internet.")
+        });
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchOrganizzazioni();
-  }, []);
+  }, [show]);
 
   const resetForm = () => {
     setUsername("");
@@ -42,9 +70,7 @@ const FormAccedi = ({ show, onHide, onLogin }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const url = isLogin
-      ? "/api/auth/login" 
-      : "/api/auth/register";  
+    const endpoint = isLogin ? '/auth/login' : '/auth/register';  
 
     const payload = isLogin
       ? { email, password }
@@ -58,21 +84,22 @@ const FormAccedi = ({ show, onHide, onLogin }) => {
         };
 
     try {
-      const response = await fetch(url, {
+      setIsLoading(true);
+      setMessage(null);
+      
+      const data = await enhancedFetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Errore nella richiesta");
-      }
-
       if (isLogin) {
+        // In caso di login, salva i dati utente e token
         localStorage.setItem("user", JSON.stringify(data));
-        setMessage({ type: "success", text: "Login effettuato con successo!" });
+        setMessage({ 
+          type: "success", 
+          text: "Login effettuato con successo!"
+        });
 
         setTimeout(() => {
           setMessage(null);
@@ -80,15 +107,53 @@ const FormAccedi = ({ show, onHide, onLogin }) => {
           onLogin(data);
         }, 1000);
       } else {
-        setMessage({ type: "success", text: "Registrazione completata!" });
+        // In caso di registrazione, mostra messaggio di successo
+        setMessage({ 
+          type: "success", 
+          text: "Registrazione completata! Ora puoi accedere con le tue credenziali."
+        });
+        
         setTimeout(() => {
           setIsLogin(true);
           resetForm();
-        }, 1000);
+        }, 2000);
       }
     } catch (error) {
-      setMessage({ type: "danger", text: error.message });
+      // Gestione degli errori più descrittiva
+      let errorMessage = "Si è verificato un errore durante l'operazione.";
+      
+      if (error.message.includes("timeout")) {
+        errorMessage = "Il server sta impiegando troppo tempo a rispondere. Potrebbe essere in fase di avvio o sovraccarico.";
+      } else if (error.message.includes("fetch")) {
+        errorMessage = "Impossibile connettersi al server. Verifica la tua connessione internet.";
+      } else {
+        errorMessage = error.message;
+      }
+      
+      setMessage({ type: "danger", text: errorMessage });
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  // Rendering condizionale per lo stato del server
+  const renderServerStatus = () => {
+    if (serverStatus === 'online') return null;
+    
+    return (
+      <Alert variant={serverStatus === 'connecting' ? 'warning' : 'danger'}>
+        {serverStatus === 'connecting' ? (
+          <>
+            <Spinner animation="border" size="sm" className="me-2" />
+            Connessione al server in corso...
+          </>
+        ) : (
+          <>
+            Impossibile connettersi al server. Riprova più tardi o verifica la tua connessione internet.
+          </>
+        )}
+      </Alert>
+    );
   };
 
   return (
@@ -101,7 +166,9 @@ const FormAccedi = ({ show, onHide, onLogin }) => {
       </Modal.Header>{" "}
       <Modal.Body className="modal-body bg-black ">
         {" "}
+        {renderServerStatus()}
         {message && <Alert variant={message.type}>{message.text}</Alert>}
+        
         <Form onSubmit={handleSubmit}>
           {!isLogin && (
             <>
@@ -115,6 +182,7 @@ const FormAccedi = ({ show, onHide, onLogin }) => {
                   required
                   minLength={3}
                   maxLength={50}
+                  disabled={isLoading}
                 />
               </Form.Group>
 
@@ -127,6 +195,7 @@ const FormAccedi = ({ show, onHide, onLogin }) => {
                   value={nome}
                   onChange={(e) => setNome(e.target.value)}
                   maxLength={50}
+                  disabled={isLoading}
                 />
               </Form.Group>
 
@@ -138,6 +207,7 @@ const FormAccedi = ({ show, onHide, onLogin }) => {
                   value={cognome}
                   onChange={(e) => setCognome(e.target.value)}
                   maxLength={50}
+                  disabled={isLoading}
                 />
               </Form.Group>
 
@@ -148,6 +218,7 @@ const FormAccedi = ({ show, onHide, onLogin }) => {
                   <Form.Select
                     value={organizzazioneId}
                     onChange={(e) => setOrganizzazioneId(e.target.value)}
+                    disabled={isLoading}
                   >
                     <option value="">Seleziona un'organizzazione</option>
                     {organizzazioni.map((org) => (
@@ -170,6 +241,7 @@ const FormAccedi = ({ show, onHide, onLogin }) => {
               onChange={(e) => setEmail(e.target.value)}
               required
               maxLength={50}
+              disabled={isLoading}
             />
           </Form.Group>
 
@@ -183,12 +255,24 @@ const FormAccedi = ({ show, onHide, onLogin }) => {
               required
               minLength={6}
               maxLength={100}
+              disabled={isLoading}
             />
           </Form.Group>
 
           <div className="d-grid gap-2">
-            <Button className="btn accedi-form rounded-pill" type="submit">
-              {isLogin ? "Accedi" : "Registrati"}
+            <Button 
+              className="btn accedi-form rounded-pill" 
+              type="submit"
+              disabled={isLoading || serverStatus !== 'online'}
+            >
+              {isLoading ? (
+                <>
+                  <Spinner animation="border" size="sm" className="me-2" />
+                  {isLogin ? "Accesso in corso..." : "Registrazione in corso..."}
+                </>
+              ) : (
+                isLogin ? "Accedi" : "Registrati"
+              )}
             </Button>
           </div>
 
@@ -203,6 +287,7 @@ const FormAccedi = ({ show, onHide, onLogin }) => {
                     resetForm();
                     setIsLogin(false);
                   }}
+                  style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
                 >
                   Registrati ora
                 </a>
@@ -217,6 +302,7 @@ const FormAccedi = ({ show, onHide, onLogin }) => {
                     resetForm();
                     setIsLogin(true);
                   }}
+                  style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
                 >
                   Accedi ora
                 </a>

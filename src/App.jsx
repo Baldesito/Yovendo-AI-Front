@@ -9,6 +9,7 @@ import './index.css';
 
 function App() {
   const [user, setUser] = useState(null);
+  const apiUrl = import.meta.env.VITE_API_URL || '/api';
 
   // All'avvio dell'app, controlla se c'è un utente salvato
   useEffect(() => {
@@ -34,6 +35,7 @@ function App() {
   return (
     <Router>
       <div className="d-flex flex-column min-vh-100">
+        <ConnectionStatus apiUrl={apiUrl} />
         <Navigation user={user} onLogout={handleLogout} />
         <main className="flex-grow-1">
           <Routes>

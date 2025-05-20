@@ -351,6 +351,8 @@ a{
 }
 
 .chat-message.client {
+  background-color: #000000;
+  color: white;
   justify-content: flex-start;
 
 }

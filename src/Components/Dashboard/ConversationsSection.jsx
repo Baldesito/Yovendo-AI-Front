@@ -335,7 +335,7 @@ const handleTestConnection = async () => {
                       className={`chat-message ${msg.daCliente ? 'client' : 'system'} mb-3`}
                     >
                       <div 
-                        className={`message-bubble p-3 rounded ${msg.daCliente ? 'bg-light' : 'bg-primary text-white'}`}
+                        className={`message-bubble p-3 rounded ${msg.daCliente ? 'bg-dark' : 'bg-primary text-white'}`}
                         style={{ 
                           maxWidth: "80%", 
                           marginLeft: msg.daCliente ? "0" : "auto",

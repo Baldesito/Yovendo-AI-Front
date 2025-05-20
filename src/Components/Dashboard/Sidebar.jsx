@@ -10,7 +10,7 @@ const Sidebar = ({ activeSection, changeSection, sidebarOpen, toggleSidebar }) =
       className={`sidebar p-0 ${sidebarOpen ? 'sidebar-mobile-open' : 'sidebar-mobile-closed'}`}
     >
       <div className="sidebar-header">
-        <h3>Yovendo  <img src="/src/assets/yovendo-ai.svg" alt="Logo" width="40" height="40" /></h3>
+        <h3>Yovendo  <img src="/yovendo-ai.svg" alt="Logo" width="40" height="40" /></h3>
         <div className="sidebar-close d-md-none" onClick={toggleSidebar}>
           <FaTimes />
         </div>

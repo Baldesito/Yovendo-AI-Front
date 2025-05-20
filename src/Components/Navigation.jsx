@@ -4,7 +4,7 @@ import { Navbar, Nav, Container, Button } from "react-bootstrap";
 import FormAccedi from "./FormAccedi";
 import "../index.css";
 import { Dropdown } from "react-bootstrap";
-import ProfiloDropDown from "./ProfiloDropDown";
+import ProfiloDrpDown from "./ProfiloDrpDown";
 
 
 
@@ -41,7 +41,7 @@ const Navigation = () => {
 
               {user ? (
                 <Dropdown align="end">
-                  <ProfiloDropDown user={user} onLogout={handleLogout} />
+                  <ProfiloDrpDown user={user} onLogout={handleLogout} />
                 </Dropdown>
               ) : (
                 <Button

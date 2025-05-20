@@ -7,6 +7,7 @@ import ConnectionStatus from './Components/ConnectionStatus';
 import './App.css';
 import './index.css';
 import { checkServerHealth, getCurrentUser } from './Components/Dashboard/API1';
+import Dashboard from './Components/Dashboard';
 
 function App() {
   const [user, setUser] = useState(null);

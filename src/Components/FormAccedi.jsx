@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form, Alert, Spinner } from "react-bootstrap";
-import { enhancedFetch } from "./API1";
+import { enhancedFetch } from "./API1.js";
 
 const FormAccedi = ({ show, onHide, onLogin }) => {
   const [isLogin, setIsLogin] = useState(true);

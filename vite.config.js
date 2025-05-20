@@ -28,6 +28,21 @@ export default defineConfig({
       overlay: false
     }
   },
+  build: {
+    // Aumenta il limite per evitare il warning
+    chunkSizeWarningLimit: 1600,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Separa le dipendenze vendor
+          vendor: ['react', 'react-dom'],
+          // Separa le librerie router se usi React Router
+          router: ['react-router-dom'],
+          // Se usi altre librerie, aggiungile qui
+        }
+      }
+    }
+  },
   esbuild: {
     logOverride: { 'this-is-undefined-in-esm': 'silent' }
   }

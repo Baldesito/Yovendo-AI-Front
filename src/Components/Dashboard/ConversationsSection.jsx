@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Card, Button, Form, InputGroup, Badge, Table, Row, Col } from "react-bootstrap";
 import { FaSearch, FaWhatsapp, FaLink, FaTimes, FaSync } from "react-icons/fa";
-import { fetchMessages } from "./api";
+import { fetchMessages } from "./API1";
 
 const ConversationsSection = ({ 
   user, 

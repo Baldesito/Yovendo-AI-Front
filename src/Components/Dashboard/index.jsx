@@ -1,4 +1,4 @@
-// src/components/Dashboard/index.jsx
+
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { FaBars, FaTimes } from "react-icons/fa";
@@ -12,7 +12,7 @@ import OrganizationsSection from "./OrganizationsSection";
 import AISettingsSection from "./AISettingsSection";
 import ProfileSection from "./ProfileSection";
 
-import * as api from "./api";
+import * as api from "./API1";
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);

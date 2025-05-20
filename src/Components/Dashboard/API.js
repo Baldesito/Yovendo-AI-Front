@@ -1,5 +1,6 @@
 
-const API_BASE_URL = "/api";
+//Per importare le variabili .env
+const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
 
 // Funzione per ottenere gli headers con il token JWT
 export const getAuthHeaders = (token) => {

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Row, Col, Card, Button, Table, Badge } from "react-bootstrap";
 import { FaChartLine, FaPhoneAlt, FaTrophy, FaFileAlt, FaComments, FaWhatsapp, FaCheck } from "react-icons/fa";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend } from 'chart.js';
@@ -17,18 +17,33 @@ ChartJS.register(
 );
 
 const DashboardSection = ({ statistics, conversations, documents, changeSection }) => {
+  // Stato per verificare se siamo nel browser
+  const [isBrowser, setIsBrowser] = useState(false);
+  
   // Refs per i grafici
   const barChartRef = useRef(null);
   const lineChartRef = useRef(null);
 
+  // Imposta isBrowser a true dopo il primo render
+  useEffect(() => {
+    setIsBrowser(true);
+  }, []);
+
   // Cleanup dei grafici quando il componente viene smontato
   useEffect(() => {
     return () => {
-      if (barChartRef.current && barChartRef.current.chartInstance) {
-        barChartRef.current.chartInstance.destroy();
+      // Metodo più sicuro per distruggere i grafici
+      if (barChartRef.current) {
+        const chart = ChartJS.getChart(barChartRef.current);
+        if (chart) {
+          chart.destroy();
+        }
       }
-      if (lineChartRef.current && lineChartRef.current.chartInstance) {
-        lineChartRef.current.chartInstance.destroy();
+      if (lineChartRef.current) {
+        const chart = ChartJS.getChart(lineChartRef.current);
+        if (chart) {
+          chart.destroy();
+        }
       }
     };
   }, []);
@@ -257,13 +272,15 @@ const DashboardSection = ({ statistics, conversations, documents, changeSection 
                 <h4 className="mb-0">Analisi Performance</h4>
               </div>
               <div style={{ height: "300px" }}>
-                <Bar 
-                  data={performanceData} 
-                  options={chartOptions} 
-                  id="performance-chart"
-                  key="performance-chart"
-                  ref={barChartRef}
-                />
+                {isBrowser && (
+                  <Bar 
+                    data={performanceData} 
+                    options={chartOptions} 
+                    id="performance-chart"
+                    key="performance-chart"
+                    ref={barChartRef}
+                  />
+                )}
               </div>
             </Card.Body>
           </Card>
@@ -276,13 +293,15 @@ const DashboardSection = ({ statistics, conversations, documents, changeSection 
                 <h4 className="mb-0">Trend Conversazioni</h4>
               </div>
               <div style={{ height: "300px" }}>
-                <Line 
-                  data={conversationTrendData} 
-                  options={lineChartOptions} 
-                  id="trend-chart"
-                  key="trend-chart"
-                  ref={lineChartRef}
-                />
+                {isBrowser && (
+                  <Line 
+                    data={conversationTrendData} 
+                    options={lineChartOptions} 
+                    id="trend-chart"
+                    key="trend-chart"
+                    ref={lineChartRef}
+                  />
+                )}
               </div>
             </Card.Body>
           </Card>

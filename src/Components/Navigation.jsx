@@ -4,8 +4,8 @@ import { Navbar, Nav, Container, Button } from "react-bootstrap";
 import FormAccedi from "./FormAccedi";
 import "../index.css";
 import { Dropdown } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import ProfiloDropdown from "./ProfiloDropDown";
+import ProfiloDropDown from "./ProfiloDropDown";
+
 
 
 const Navigation = () => {
@@ -41,7 +41,7 @@ const Navigation = () => {
 
               {user ? (
                 <Dropdown align="end">
-                  <ProfiloDropdown user={user} onLogout={handleLogout} />
+                  <ProfiloDropDown user={user} onLogout={handleLogout} />
                 </Dropdown>
               ) : (
                 <Button

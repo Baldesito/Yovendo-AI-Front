@@ -28,17 +28,17 @@
 }
 
 /* Reset e stile base */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
 
-body {
+body, html {
   background: linear-gradient(-45deg, #000000, #0a0909, #000000, #222222);
   background-size: 400% 400%;
   animation: gradientAnimation 120s ease infinite;
   font-family: "Montserrat", sans-serif;
+   overflow-x: hidden;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+     box-sizing: border-box;
 }
 
 h1,h2,h3,p{

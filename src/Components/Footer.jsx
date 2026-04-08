@@ -78,7 +78,7 @@ function Footer() {
           </Col>
         </Row>
         <Row>
-          <Col className="mb-2 mt-2 copyright">© 2025 Yovendo</Col>
+          <Col className="mb-2 mt-2 copyright">© 2026 Yovendo</Col>
         </Row>
       </Container>
     </footer>

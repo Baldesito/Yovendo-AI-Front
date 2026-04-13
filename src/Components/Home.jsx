@@ -45,7 +45,7 @@ function Home({ user, onLogin }) {
           <Col md={9} lg={8} className="text-center">
             <div className="hero-section glass-card py-5 px-4 mb-5">
               <h1 className="display-4 mb-4 fw-bold text-white">
-                Benvenuto in <span className="text-primary-light">Yovendo.ai</span>
+                Benvenuto in <span className="text-primary-light">Yovendo.AI</span>
               </h1>
               <p className="lead mb-4 text-light">La piattaforma di intelligenza artificiale per far decollare le tue performance di vendita.</p>
               <Button variant="primary" size="lg" className="rounded-pill px-5 py-3 btn-cta fw-bold text-white" onClick={() => setShowLoginModal(true)}>

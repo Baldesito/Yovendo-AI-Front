@@ -1,17 +1,58 @@
-# React + Vite
+# 🚀 Yovendo.ai
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Yovendo.ai è una piattaforma SaaS avanzata che integra intelligenza artificiale e automazione WhatsApp per ottimizzare i processi di vendita e supporto clienti. 
 
-Currently, two official plugins are available:
+Il sistema offre un assistente AI conversazionale in grado di elaborare documenti, gestire conversazioni in tempo reale e fornire risposte contestualizzate basate sui dati aziendali, aiutando i team di vendita a migliorare le proprie performance.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Caratteristiche Principali
 
-## Expanding the ESLint configuration
+* **🤖 Assistente AI Intelligente:** Integrazione con OpenAI per risposte contestuali tramite sistema RAG (Retrieval-Augmented Generation) sui documenti aziendali.
+* **📱 Integrazione WhatsApp:** Gestione diretta delle conversazioni con i clienti tramite l'API di Twilio.
+* **📊 Dashboard Analitica:** Pannello di controllo interattivo per monitorare il tasso di successo, le conversazioni e le performance dei venditori.
+* **🏢 Architettura Multi-Tenant:** Gestione sicura e separata per diverse organizzazioni e utenti all'interno della stessa piattaforma.
+* **🎨 UI/UX Moderna:** Interfaccia utente elegante e responsiva realizzata in stile *Glassmorphism* per un'esperienza visiva premium.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
 
+## 🛠 Stack Tecnologico
 
+### Backend
+* **Java 21 + Spring Boot 3.4.5:** Core application framework
+* **Spring Security + JWT:** Autenticazione e autorizzazione sicura
+* **PostgreSQL:** Database relazionale per la persistenza dei dati
+* **Hibernate/JPA:** ORM per la gestione dei dati
+* **Twilio API:** Servizio di messaggistica WhatsApp
+* **OpenAI API:** Motore di intelligenza artificiale (LLM e Embeddings)
 
-# Il link per il back-end
-https://github.com/Baldesito/Yovendo-Back-end.git
+### Frontend
+* **React 18 + Vite:** Libreria UI e build tool ultrarapido
+* **React Bootstrap:** Componenti UI strutturati e responsivi
+* **React Router Dom:** Gestione della navigazione (SPA)
+* **Chart.js / React-Chartjs-2:** Visualizzazione dati e statistiche
+* **Axios:** Client HTTP per le chiamate API RESTful
+
+---
+
+## ⚙️ Installazione e Avvio Locale
+
+### Prerequisiti
+* Java 21 installato
+* Node.js (v18 o superiore)
+* PostgreSQL in esecuzione
+* Account Twilio e OpenAI con relative API Keys
+
+### Setup Backend
+1. Clona il repository.
+2. Configura il file `application.properties` con le credenziali del database e le API keys.
+3. Avvia l'applicazione Spring Boot.
+
+### Setup Frontend
+1. Naviga nella cartella del frontend: `cd client` (o nome della cartella).
+2. Installa le dipendenze: `npm install`
+3. Crea un file `.env` e configura l'URL dell'API backend (es. `VITE_API_URL=http://localhost:8080/api`).
+4. Avvia il server di sviluppo: `npm run dev`
+
+---
+
+## 🔒 Sicurezza e Gestione Dati
+L'accesso alla piattaforma è protetto da un sistema di login/registrazione crittografato. I dati dei clienti, i documenti elaborati e le statistiche sono isolati tramite `organizzazioneId`, garantendo la massima privacy tra i diversi tenant della piattaforma SaaS.

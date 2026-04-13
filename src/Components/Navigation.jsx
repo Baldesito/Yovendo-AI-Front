@@ -3,7 +3,7 @@ import { Navbar, Nav, Container, Button, Dropdown } from "react-bootstrap";
 import FormAccedi from "./FormAccedi";
 import ProfiloDrpDown from "./ProfiloDrpDown";
 
-const Navigation = ({ user, onLogout }) => {
+const Navigation = ({ user, onLogout, onLogin }) => {
   const [showModal, setShowModal] = useState(false);
 
   return (
@@ -11,8 +11,8 @@ const Navigation = ({ user, onLogout }) => {
       <Navbar expand="lg" variant="dark" className="custom-navbar glass-nav px-4">
         <Navbar.Brand href="/" className="d-flex align-items-center">
           {/* Logo Ingrandito e Spostato a Sinistra */}
-          <img src="/yovendo-ai.svg" alt="Logo" className="me-3" style={{ width: "45px", height: "auto" }} />
-          <span className="nome-sito fw-bold text-white fs-4">Yovendo.<span className="text-primary">AI</span></span>
+          
+          <span className="nome-sito fw-bold text-white fs-4">Yovendo.<span className="text-primary">AI</span></span><img src="/yovendo-ai.svg" alt="Logo" style={{ width: "45px", height: "auto" }} />
         </Navbar.Brand>
 
         <Navbar.Toggle aria-controls="basic-navbar-nav" className="border-0" />
@@ -37,7 +37,7 @@ const Navigation = ({ user, onLogout }) => {
         </Navbar.Collapse>
       </Navbar>
 
-      <FormAccedi show={showModal} onHide={() => setShowModal(false)} />
+      <FormAccedi show={showModal} onHide={() => setShowModal(false)} onLogin={onLogin} />
     </Container>
   );
 };

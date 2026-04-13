@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form, Alert, Spinner } from "react-bootstrap";
+import { useNavigate } from "react-router-dom"; 
 import { enhancedFetch } from "./Dashboard/API1";
 
-//else
-const FormAccedi = ({ show, onHide}) => {
+
+const FormAccedi = ({ show, onHide, onLogin }) => { 
   const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState(""); 
   const [email, setEmail] = useState("");
@@ -15,6 +16,8 @@ const FormAccedi = ({ show, onHide}) => {
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [serverStatus, setServerStatus] = useState('online');
+
+  const navigate = useNavigate(); 
 
   // Verifica lo stato del server all'apertura del modale
   useEffect(() => {
@@ -81,7 +84,6 @@ const FormAccedi = ({ show, onHide}) => {
           password,
           nome, 
           cognome, 
-          // Se l'id è vuoto o stringa vuota, invia null o omettilo
           organizzazioneId: organizzazioneId ? Number(organizzazioneId) : null  
         };
 
@@ -95,20 +97,31 @@ const FormAccedi = ({ show, onHide}) => {
         body: JSON.stringify(payload),
       });
 
- if (isLogin) {
+      if (isLogin) {
         // LOGIN SUCCESSO
-        
         localStorage.setItem("user", JSON.stringify(data));
         setMessage({ type: "success", text: "Login effettuato con successo!" });
-      }
-       else {
+
+        // TRANSIZIONE FLUIDA
+        setTimeout(() => {
+          setMessage(null);
+          onHide(); // Chiude il modale
+          
+          if (onLogin) {
+            onLogin(data); // Avvisa App.jsx per aggiornare l'interfaccia (Navbar, ecc.)
+          }
+          
+          // Naviga istantaneamente alla dashboard senza ricaricare la pagina
+          navigate('/dashboard'); 
+        }, 1000);
+      } else {
         // REGISTRAZIONE SUCCESSO
         setMessage({ type: "success", text: "Registrazione completata! Ora puoi accedere." });
         
         setTimeout(() => {
           setIsLogin(true);
           resetForm();
-        }, 2000);
+        }, 1000);
       }
     } catch (error) {
       let errorMessage = "Si è verificato un errore durante l'operazione.";

@@ -54,7 +54,7 @@ function App() {
     <Router>
       <div className="d-flex flex-column min-vh-100">
         <ConnectionStatus apiUrl={apiUrl} />
-        <Navigation user={user} onLogout={handleLogout} />
+        <Navigation user={user} onLogout={handleLogout} onLogin={handleLogin} />
         <main className="flex-grow-1">
           <Routes>
             <Route path="/" element={<Home user={user} onLogin={handleLogin} />} />

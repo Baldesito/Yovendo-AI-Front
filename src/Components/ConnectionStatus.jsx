@@ -1,21 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { Alert, Button, Spinner } from 'react-bootstrap';
+import React, { useState, useEffect, useRef } from 'react';
+import { Spinner } from 'react-bootstrap';
+
 
 const ConnectionStatus = ({ apiUrl }) => {
   const [status, setStatus] = useState('checking'); // 'checking', 'online', 'offline', 'sleeping'
   const [retryCount, setRetryCount] = useState(0);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState(''); // CORRETTO: da errorMess a errorMessage
   const [visible, setVisible] = useState(true);
   
+  // Usiamo un ref per tracciare se il componente è ancora montato
+  const isMounted = useRef(true);
+  
   useEffect(() => {
+    isMounted.current = true;
+    const controller = new AbortController();
+    
     const checkConnection = async () => {
       try {
-        setStatus('checking');
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 15000); // Aumentato a 15 secondi
+        if (isMounted.current) setStatus('checking');
         
-        // CORREZIONE: Rimossa l'aggiunta di /api in quanto apiUrl già lo contiene
-        // CORREZIONE: Non dovrebbe essere ${apiUrl}/api/health ma ${apiUrl}/health
+        // Timeout di 15 secondi
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
         const healthEndpoint = apiUrl.endsWith('/api') ? `${apiUrl}/health` : `${apiUrl}/api/health`;
         
         console.log(`Verifica connessione a: ${healthEndpoint}`);
@@ -23,112 +28,106 @@ const ConnectionStatus = ({ apiUrl }) => {
         const response = await fetch(healthEndpoint, { 
           signal: controller.signal,
           mode: 'cors', 
-          headers: {
-            'Accept': 'application/json',
-          },
-          // AGGIUNTA: Impedisce ai browser di memorizzare in cache la risposta
+          headers: { 'Accept': 'application/json' },
           cache: 'no-store'
         });
         
         clearTimeout(timeoutId);
         
+        if (!isMounted.current) return; // Evita di aggiornare lo stato se smontato
+
         if (response.ok) {
           console.log('Connessione al server stabilita con successo');
           setStatus('online');
           setErrorMessage('');
-          
-          // Nascondi l'avviso dopo 3 secondi se il server è online
-          setTimeout(() => setVisible(false), 3000);
+          setTimeout(() => { if (isMounted.current) setVisible(false); }, 3000);
         } else if (response.status === 503) {
           console.log('Server in fase di avvio (503)');
           setStatus('sleeping');
           setErrorMessage(`Risposta del server: ${response.status}`);
-          // Riprova dopo 5 secondi
-          setTimeout(() => setRetryCount(c => c + 1), 5000);
+          setTimeout(() => { if (isMounted.current) setRetryCount(c => c + 1); }, 5000);
         } else {
           console.log(`Errore nella risposta del server: ${response.status}`);
           setStatus('offline');
           setErrorMessage(`Codice errore: ${response.status}`);
-          
-          // AGGIUNTA: Tentativi di riconnessione automatica
-          setTimeout(() => setRetryCount(c => c + 1), 10000); // Riprova dopo 10 secondi
+          setTimeout(() => { if (isMounted.current) setRetryCount(c => c + 1); }, 10000);
         }
       } catch (error) {
+        if (!isMounted.current) return;
+        
         console.error('Errore nella verifica della connessione:', error);
         
+        // Se è un AbortError (Timeout)
         if (error.name === 'AbortError') {
           console.log('Timeout nella connessione al server');
           setStatus('sleeping');
-          setErrorMessage('Timeout nella connessione');
-          // Riprova dopo 5 secondi
-          setTimeout(() => setRetryCount(c => c + 1), 5000);
+          setErrorMessage('Timeout nella connessione (il server potrebbe essere in avvio)');
+          setTimeout(() => { if (isMounted.current) setRetryCount(c => c + 1); }, 5000);
         } else {
+          // Se è un altro tipo di errore (es. rete staccata o server spento)
           setStatus('offline');
-          setErrorMessage(error.message || 'Errore di connessione');
-          
-          // AGGIUNTA: Tentativi di riconnessione automatica
-          setTimeout(() => setRetryCount(c => c + 1), 10000); // Riprova dopo 10 secondi
+          setErrorMessage(error.message || 'Errore di rete');
+          setTimeout(() => { if (isMounted.current) setRetryCount(c => c + 1); }, 10000);
         }
       }
     };
     
-    // Esegui il controllo solo se il componente è visibile
     if (visible) {
       checkConnection();
     }
     
-    // AGGIUNTA: Pulizia del timeout quando il componente viene smontato
+    // Funzione di cleanup che viene chiamata quando il componente viene distrutto o prima del prossimo re-render
     return () => {
-      // Pulizia di eventuali timeout in sospeso
+      isMounted.current = false;
+      controller.abort(); // Interrompe eventuali fetch in corso per evitare errori in console
     };
   }, [apiUrl, retryCount, visible]);
-  
-  // Se online o non visibile, non mostrare nulla
-  if (!visible || status === 'online') {
-    return null;
-  }
-  
-  // AGGIUNTA: Funzione per gestire tentativi manuali
+
   const handleRetry = () => {
     console.log("Tentativo manuale di riconnessione");
     setRetryCount(c => c + 1);
   };
-  
+
+  if (!visible || status === 'online') return null;
+
+  const getStatusConfig = () => {
+    switch(status) {
+      case 'checking': 
+        return { bg: 'rgba(52, 144, 220, 0.2)', border: 'var(--primary)', icon: <Spinner size="sm" className="me-2 text-primary"/>, text: "Verifica connessione..." };
+      case 'sleeping': 
+        return { bg: 'rgba(246, 224, 94, 0.2)', border: 'var(--warning)', icon: <Spinner size="sm" className="me-2 text-warning"/>, text: "Risveglio server in corso..." };
+      case 'offline': 
+        return { bg: 'rgba(252, 129, 129, 0.2)', border: 'var(--danger)', icon: <span className="me-2 text-danger fw-bold">!</span>, text: "Server offline" };
+      default: 
+        return { bg: 'rgba(0,0,0,0)', border: 'transparent', icon: null, text: "" };
+    }
+  };
+
+  const config = getStatusConfig();
+
   return (
-    <Alert 
-      variant={status === 'checking' ? 'info' : status === 'sleeping' ? 'warning' : 'danger'}
-      className="connection-alert m-0 rounded-0 text-center"
+    <div 
+      className="position-fixed d-flex align-items-center px-4 py-2 glass-card shadow"
+      style={{ 
+        top: "20px", left: "50%", transform: "translateX(-50%)", zIndex: 1060,
+        backgroundColor: config.bg, border: `1px solid ${config.border}`
+      }}
     >
-      {status === 'checking' && (
-        <>
-          <Spinner animation="border" size="sm" className="me-2" />
-          Verifica connessione al server...
-        </>
-      )}
-      
-      {status === 'sleeping' && (
-        <>
-          <Spinner animation="border" size="sm" className="me-2" />
-          <span>Il server è in fase di avvio. Potrebbe richiedere fino a 30 secondi...</span>
-        </>
-      )}
-      
+      {config.icon}
+      <span className="text-white fw-semibold small">
+        {config.text} 
+        {/* Mostriamo un piccolo tooltip al passaggio del mouse se c'è un errore specifico */}
+        {errorMessage && status === 'offline' && <span title={errorMessage} style={{cursor: 'help'}}> ℹ️</span>}
+      </span>
       {status === 'offline' && (
-        <div>
-          <strong>Impossibile connettersi al server.</strong> 
-          <p className="mb-1">Il server potrebbe essere in manutenzione o non raggiungibile.</p>
-          {errorMessage && <p className="mb-2 small text-muted">Dettagli: {errorMessage}</p>}
-          <Button 
-            variant="outline-light" 
-            size="sm" 
-            onClick={handleRetry}
-            className="mt-1"
-          >
-            Riprova connessione
-          </Button>
-        </div>
+        <button 
+          onClick={handleRetry} 
+          className="btn btn-sm text-white ms-3 p-0 fw-bold border-0 bg-transparent text-decoration-none opacity-75 hover-primary"
+        >
+          Riprova
+        </button>
       )}
-    </Alert>
+    </div>
   );
 };
 

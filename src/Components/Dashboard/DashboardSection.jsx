@@ -4,144 +4,76 @@ import { FaChartLine, FaPhoneAlt, FaTrophy, FaFileAlt, FaComments, FaWhatsapp, F
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend } from 'chart.js';
 import { Bar, Line } from "react-chartjs-2";
 
-// Registra i componenti necessari di Chart.js
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  LineElement,
-  PointElement,
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend);
 
 const DashboardSection = ({ statistics, conversations, documents, changeSection }) => {
-  // Stato per verificare se siamo nel browser
   const [isBrowser, setIsBrowser] = useState(false);
-  
-  // Refs per i grafici
   const barChartRef = useRef(null);
   const lineChartRef = useRef(null);
 
-  // Imposta isBrowser a true dopo il primo render
-  useEffect(() => {
-    setIsBrowser(true);
-  }, []);
+  useEffect(() => { setIsBrowser(true); }, []);
 
-  // Cleanup dei grafici quando il componente viene smontato
   useEffect(() => {
     return () => {
-      // Metodo più sicuro per distruggere i grafici
-      if (barChartRef.current) {
-        const chart = ChartJS.getChart(barChartRef.current);
-        if (chart) {
-          chart.destroy();
-        }
-      }
-      if (lineChartRef.current) {
-        const chart = ChartJS.getChart(lineChartRef.current);
-        if (chart) {
-          chart.destroy();
-        }
-      }
+      //eslint-disable-next-line
+      if (barChartRef.current) { const chart = ChartJS.getChart(barChartRef.current); if (chart) chart.destroy(); } //eslint-disable-next-line
+      if (lineChartRef.current) { const chart = ChartJS.getChart(lineChartRef.current); if (chart) chart.destroy(); }
     };
   }, []);
 
-  // Dati per i grafici
   const performanceData = {
     labels: ["Ascolto", "Empatia", "Chiarezza", "Negoz.", "Chiusura"],
-    datasets: [
-      {
-        label: "Performance",
-        data: [75, 65, 80, 60, 70],
-        backgroundColor: "#67A1CE",
-        borderColor: "#2779bd",
-        borderWidth: 1,
-      },
-    ],
+    datasets: [{
+      label: "Performance",
+      data: [75, 65, 80, 60, 70],
+      backgroundColor: "rgba(103, 161, 206, 0.6)",
+      borderColor: "#67A1CE",
+      borderWidth: 1,
+    }],
   };
 
   const conversationTrendData = {
     labels: ["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"],
     datasets: [
-      {
-        label: "Conversazioni",
-        data: [3, 5, 2, 8, 6, 0, 1],
-        borderColor: "#67A1CE",
-        backgroundColor: "rgba(103, 161, 206, 0.2)",
-        tension: 0.4,
-        fill: true
-      },
-      {
-        label: "Messaggi",
-        data: [12, 19, 8, 22, 15, 0, 4],
-        borderColor: "#68d391",
-        backgroundColor: "rgba(104, 211, 145, 0.2)",
-        tension: 0.4,
-        fill: true
-      }
+      { label: "Conversazioni", data: [3, 5, 2, 8, 6, 0, 1], borderColor: "#67A1CE", backgroundColor: "rgba(103, 161, 206, 0.2)", tension: 0.4, fill: true },
+      { label: "Messaggi", data: [12, 19, 8, 22, 15, 0, 4], borderColor: "#68d391", backgroundColor: "rgba(104, 211, 145, 0.2)", tension: 0.4, fill: true }
     ],
   };
 
   const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      y: {
-        beginAtZero: true,
-        max: 100,
-        ticks: {
-          callback: function (value) {
-            return value + "%";
-          },
-        },
-      },
+    responsive: true, maintainAspectRatio: false,
+    color: 'rgba(255,255,255,0.7)',
+    scales: { 
+      y: { beginAtZero: true, max: 100, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: 'rgba(255,255,255,0.7)', callback: function (value) { return value + "%"; } } },
+      x: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: 'rgba(255,255,255,0.7)' } }
     },
-    plugins: {
-      legend: {
-        display: false,
-      },
-    },
+    plugins: { legend: { display: false } },
   };
 
   const lineChartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      y: {
-        beginAtZero: true
-      }
-    }
-  };
-
-  // Funzione per gestire la selezione della conversazione
-  const handleSelectConversation = (conversation) => {
-    // Implementa la logica per gestire la selezione della conversazione
-    console.log("Conversazione selezionata:", conversation);
+    responsive: true, maintainAspectRatio: false, color: 'rgba(255,255,255,0.7)',
+    scales: { 
+      y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: 'rgba(255,255,255,0.7)' } },
+      x: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: 'rgba(255,255,255,0.7)' } }
+    },
+    plugins: { legend: { labels: { color: 'rgba(255,255,255,0.7)' } } }
   };
 
   return (
-    <>
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2 className="mb-0 main-title">Dashboard</h2>
+    <div className="text-white">
+      <div className="d-flex justify-content-between align-items-center mb-4 mt-2">
+        <h2 className="mb-0 fw-bold">Dashboard</h2>
       </div>
 
-      {/* Welcome Card */}
-      <Card className="welcome-card mb-4">
-        <Card.Body className="p-3 p-md-4">
+      <Card className="glass-card mb-4 border-0">
+        <Card.Body className="p-4">
           <Row className="align-items-center">
             <Col lg={9} md={8} sm={12}>
-              <h2 className="welcome-title mb-2">
-                Benvenuto nel tuo Direttore Vendite AI
-              </h2>
-              <p className="welcome-text mb-0">
-                Monitora le tue performance di vendita, analizza le
-                chiamate e migliora le tue capacità con l'assistenza AI.
-              </p>
+              <h2 className="mb-2 fw-bold">Benvenuto nel tuo Direttore Vendite AI</h2>
+              <p className="mb-0 opacity-75">Monitora le tue performance di vendita, analizza le chiamate e migliora le tue capacità con l'assistenza AI.</p>
             </Col>
             <Col lg={3} md={4} sm={12} className="mt-3 mt-md-0 text-center text-md-end">
-              <Button className="tour-button rounded-pill">
+              <Button variant="outline-light" className="rounded-pill px-4 py-2 hover-primary">
                 <FaChartLine className="me-2" /> Tour Guidato
               </Button>
             </Col>
@@ -149,204 +81,104 @@ const DashboardSection = ({ statistics, conversations, documents, changeSection 
         </Card.Body>
       </Card>
 
-      {/* Stats Cards */}
+      {/* Stats Prima Riga */}
       <Row className="mb-4 g-3">
-        <Col lg={4} md={6} sm={12}>
-          <Card className="stat-card h-100">
-            <Card.Body className="p-3">
-              <div className="d-flex justify-content-between align-items-center">
+        {[
+          { label: "Chiamate Analizzate", value: statistics.totalCalls || 0, icon: <FaPhoneAlt />, iconClass: "phone-icon" },
+          { label: "Tasso di Successo", value: `${(statistics.successRate || 0).toFixed(2)}%`, icon: <FaChartLine />, iconClass: "success-icon" },
+          { label: "Venditore Top", value: statistics.topSeller || "N/A", icon: <FaTrophy />, iconClass: "trophy-icon" }
+        ].map((stat, idx) => (
+          <Col lg={4} md={6} sm={12} key={idx}>
+            <Card className="glass-card h-100 border-0">
+              <Card.Body className="p-4 d-flex justify-content-between align-items-center">
                 <div>
-                  <p className="stat-label">Totale Chiamate Analizzate</p>
-                  <h3 className="stat-value">{statistics.totalCalls || 0}</h3>
+                  <p className="opacity-75 small text-uppercase mb-1">{stat.label}</p>
+                  <h3 className="fw-bold mb-0 text-white">{stat.value}</h3>
                 </div>
-                <div className="stat-icon phone-icon">
-                  <FaPhoneAlt />
-                </div>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col lg={4} md={6} sm={12}>
-          <Card className="stat-card h-100">
-            <Card.Body className="p-3">
-              <div className="d-flex justify-content-between align-items-center">
-                <div>
-                  <p className="stat-label">Tasso di Successo Medio</p>
-                  <h3 className="stat-value">{(statistics.successRate || 0).toFixed(2)}%</h3>
-                </div>
-                <div className="stat-icon success-icon">
-                  <FaChartLine />
-                </div>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col lg={4} md={12} sm={12}>
-          <Card className="stat-card h-100">
-            <Card.Body className="p-3">
-              <div className="d-flex justify-content-between align-items-center">
-                <div>
-                  <p className="stat-label">Venditore Top</p>
-                  <h3 className="stat-value top-seller">{statistics.topSeller || "N/A"}</h3>
-                </div>
-                <div className="stat-icon trophy-icon">
-                  <FaTrophy />
-                </div>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
+                <div className={`stat-icon ${stat.iconClass}`}>{stat.icon}</div>
+              </Card.Body>
+            </Card>
+          </Col>
+        ))}
       </Row>
 
-      {/* Second Row Stats */}
+      {/* Stats Seconda Riga */}
       <Row className="mb-4 g-3">
-        <Col lg={3} md={6} sm={12}>
-          <Card className="stat-card h-100">
-            <Card.Body className="p-3">
-              <div className="d-flex justify-content-between align-items-center">
+        {[
+          { label: "Totale Conversazioni", value: statistics.conversationCount || 0, icon: <FaComments />, iconClass: "phone-icon" },
+          { label: "Messaggi Scambiati", value: statistics.messageCount || 0, icon: <FaWhatsapp />, iconClass: "success-icon" },
+          { label: "Documenti Caricati", value: statistics.documentCount || 0, icon: <FaFileAlt />, iconClass: "trophy-icon" },
+          { label: "Documenti Elaborati", value: statistics.processedDocuments || 0, icon: <FaCheck />, iconClass: "success-icon" }
+        ].map((stat, idx) => (
+          <Col lg={3} md={6} sm={12} key={idx}>
+            <Card className="glass-card h-100 border-0">
+              <Card.Body className="p-4 d-flex justify-content-between align-items-center">
                 <div>
-                  <p className="stat-label">Totale Conversazioni</p>
-                  <h3 className="stat-value">{statistics.conversationCount || 0}</h3>
+                  <p className="opacity-75 small text-uppercase mb-1" style={{fontSize: '0.75rem'}}>{stat.label}</p>
+                  <h3 className="fw-bold mb-0 text-white fs-4">{stat.value}</h3>
                 </div>
-                <div className="stat-icon phone-icon">
-                  <FaComments />
-                </div>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col lg={3} md={6} sm={12}>
-          <Card className="stat-card h-100">
-            <Card.Body className="p-3">
-              <div className="d-flex justify-content-between align-items-center">
-                <div>
-                  <p className="stat-label">Messaggi Scambiati</p>
-                  <h3 className="stat-value">{statistics.messageCount || 0}</h3>
-                </div>
-                <div className="stat-icon success-icon">
-                  <FaWhatsapp />
-                </div>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col lg={3} md={6} sm={12}>
-          <Card className="stat-card h-100">
-            <Card.Body className="p-3">
-              <div className="d-flex justify-content-between align-items-center">
-                <div>
-                  <p className="stat-label">Documenti Caricati</p>
-                  <h3 className="stat-value">{statistics.documentCount || 0}</h3>
-                </div>
-                <div className="stat-icon trophy-icon">
-                  <FaFileAlt />
-                </div>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col lg={3} md={6} sm={12}>
-          <Card className="stat-card h-100">
-            <Card.Body className="p-3">
-              <div className="d-flex justify-content-between align-items-center">
-                <div>
-                  <p className="stat-label">Documenti Elaborati</p>
-                  <h3 className="stat-value">{statistics.processedDocuments || 0}</h3>
-                </div>
-                <div className="stat-icon success-icon">
-                  <FaCheck />
-                </div>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
+                <div className={`stat-icon ${stat.iconClass}`} style={{minWidth: '40px', minHeight: '40px', fontSize: '1.2rem'}}>{stat.icon}</div>
+              </Card.Body>
+            </Card>
+          </Col>
+        ))}
       </Row>
 
       {/* Charts */}
-      <Row className="mb-4">
+      <Row className="mb-4 g-4">
         <Col lg={6} md={12}>
-          <Card className="h-100">
-            <Card.Body className="p-3 p-md-4">
-              <div className="d-flex align-items-center mb-3">
-                <FaChartLine className="me-2 text-primary" />
-                <h4 className="mb-0">Analisi Performance</h4>
+          <Card className="glass-card h-100 border-0">
+            <Card.Body className="p-4">
+              <div className="d-flex align-items-center mb-4">
+                <FaChartLine className="me-3 text-primary fs-4" />
+                <h5 className="mb-0 fw-bold">Analisi Performance</h5>
               </div>
               <div style={{ height: "300px" }}>
-                {isBrowser && (
-                  <Bar 
-                    data={performanceData} 
-                    options={chartOptions} 
-                    id="performance-chart"
-                    key="performance-chart"
-                    ref={barChartRef}
-                  />
-                )}
+                {isBrowser && <Bar data={performanceData} options={chartOptions} ref={barChartRef} />}
               </div>
             </Card.Body>
           </Card>
         </Col>
-        <Col lg={6} md={12} className="mt-4 mt-lg-0">
-          <Card className="h-100">
-            <Card.Body className="p-3 p-md-4">
-              <div className="d-flex align-items-center mb-3">
-                <FaChartLine className="me-2 text-primary" />
-                <h4 className="mb-0">Trend Conversazioni</h4>
+        <Col lg={6} md={12}>
+          <Card className="glass-card h-100 border-0">
+            <Card.Body className="p-4">
+              <div className="d-flex align-items-center mb-4">
+                <FaChartLine className="me-3 text-primary fs-4" />
+                <h5 className="mb-0 fw-bold">Trend Conversazioni</h5>
               </div>
               <div style={{ height: "300px" }}>
-                {isBrowser && (
-                  <Line 
-                    data={conversationTrendData} 
-                    options={lineChartOptions} 
-                    id="trend-chart"
-                    key="trend-chart"
-                    ref={lineChartRef}
-                  />
-                )}
+                {isBrowser && <Line data={conversationTrendData} options={lineChartOptions} ref={lineChartRef} />}
               </div>
             </Card.Body>
           </Card>
         </Col>
       </Row>
 
-      {/* Recent Activities */}
-      <Row>
+      {/* Tabelle */}
+      <Row className="g-4 mb-4">
         <Col lg={6} md={12}>
-          <Card className="mb-4">
-            <Card.Body className="p-3 p-md-4">
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <h5 className="mb-0">Conversazioni Recenti</h5>
-                <Button variant="outline-primary" size="sm" className="rounded-pill" onClick={() => changeSection("conversations")}>
+          <Card className="glass-card h-100 border-0">
+            <Card.Body className="p-4">
+              <div className="d-flex justify-content-between align-items-center mb-4">
+                <h5 className="mb-0 fw-bold text-secondary">Conversazioni Recenti</h5>
+                <Button variant="outline-light" size="sm" className="rounded-pill opacity-75 hover-primary" onClick={() => changeSection("conversations")}>
                   Vedi tutte
                 </Button>
               </div>
               <div className="table-responsive">
-                <Table hover className="mb-0">
-                  <thead>
-                    <tr>
-                      <th>Cliente</th>
-                      <th>Stato</th>
-                      <th>Ultimo messaggio</th>
-                    </tr>
-                  </thead>
+                <Table hover className="glass-table mb-0">
+                  <thead><tr><th>Cliente</th><th>Stato</th><th>Ultimo messaggio</th></tr></thead>
                   <tbody>
                     {conversations && conversations.length > 0 ? (
                       conversations.slice(0, 3).map((conv) => (
-                        <tr key={conv.id} onClick={() => handleSelectConversation(conv)} style={{ cursor: "pointer" }}>
+                        <tr key={conv.id} style={{ cursor: "pointer" }}>
                           <td>{conv.telefonoCliente}</td>
-                          <td>
-                            <Badge bg={conv.stato === "attiva" ? "success" : "secondary"}>
-                              {conv.stato === "attiva" ? "Attiva" : "Chiusa"}
-                            </Badge>
-                          </td>
-                          <td className="text-truncate" style={{ maxWidth: "200px" }}>
-                            {conv.ultimoMessaggioTesto}
-                          </td>
+                          <td><Badge bg={conv.stato === "attiva" ? "success" : "secondary"}>{conv.stato === "attiva" ? "Attiva" : "Chiusa"}</Badge></td>
+                          <td className="text-truncate opacity-75" style={{ maxWidth: "150px" }}>{conv.ultimoMessaggioTesto}</td>
                         </tr>
                       ))
                     ) : (
-                      <tr>
-                        <td colSpan="3" className="text-center">Nessuna conversazione disponibile</td>
-                      </tr>
+                      <tr><td colSpan="3" className="text-center opacity-50 py-3">Nessuna conversazione</td></tr>
                     )}
                   </tbody>
                 </Table>
@@ -354,45 +186,30 @@ const DashboardSection = ({ statistics, conversations, documents, changeSection 
             </Card.Body>
           </Card>
         </Col>
+        
         <Col lg={6} md={12}>
-          <Card>
-            <Card.Body className="p-3 p-md-4">
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <h5 className="mb-0">Documenti Recenti</h5>
-                <Button variant="outline-primary" size="sm" className="rounded-pill" onClick={() => changeSection("documents")}>
+          <Card className="glass-card h-100 border-0">
+            <Card.Body className="p-4">
+              <div className="d-flex justify-content-between align-items-center mb-4">
+                <h5 className="mb-0 fw-bold text-secondary">Documenti Recenti</h5>
+                <Button variant="outline-light" size="sm" className="rounded-pill opacity-75 hover-primary" onClick={() => changeSection("documents")}>
                   Vedi tutti
                 </Button>
               </div>
               <div className="table-responsive">
-                <Table hover className="mb-0">
-                  <thead>
-                    <tr>
-                      <th>Titolo</th>
-                      <th>Tipo</th>
-                      <th>Stato</th>
-                    </tr>
-                  </thead>
+                <Table hover className="glass-table mb-0">
+                  <thead><tr><th>Titolo</th><th>Tipo</th><th>Stato</th></tr></thead>
                   <tbody>
                     {documents && documents.length > 0 ? (
                       documents.slice(0, 3).map((doc) => (
                         <tr key={doc.id}>
                           <td>{doc.titolo}</td>
-                          <td>
-                            {doc.tipoContenuto && doc.tipoContenuto.includes("pdf") ? "PDF" : 
-                             doc.tipoContenuto && doc.tipoContenuto.includes("word") ? "Word" : 
-                             doc.tipoContenuto && doc.tipoContenuto.includes("plain") ? "Testo" : "Documento"}
-                          </td>
-                          <td>
-                            <Badge bg={doc.elaborato ? "success" : "warning"}>
-                              {doc.elaborato ? "Elaborato" : "In attesa"}
-                            </Badge>
-                          </td>
+                          <td className="opacity-75">{doc.tipoContenuto?.includes("pdf") ? "PDF" : doc.tipoContenuto?.includes("word") ? "Word" : "Testo"}</td>
+                          <td><Badge bg={doc.elaborato ? "success" : "warning"} className="text-dark">{doc.elaborato ? "Elaborato" : "In attesa"}</Badge></td>
                         </tr>
                       ))
                     ) : (
-                      <tr>
-                        <td colSpan="3" className="text-center">Nessun documento disponibile</td>
-                      </tr>
+                      <tr><td colSpan="3" className="text-center opacity-50 py-3">Nessun documento</td></tr>
                     )}
                   </tbody>
                 </Table>
@@ -402,33 +219,32 @@ const DashboardSection = ({ statistics, conversations, documents, changeSection 
         </Col>
       </Row>
 
-      {/* Improvement Areas */}
-      <Card className="mt-4">
-        <Card.Body className="p-3 p-md-4">
-          <h5 className="mb-3">Aree di Miglioramento Chiave:</h5>
-          <Row className="g-3">
+{/* Aree Miglioramento Recuperate e ILLUMINATE */}
+      <Card className="glass-card border-0 mb-4">
+        <Card.Body className="p-4">
+          <h5 className="mb-4 fw-bold text-white">Aree di Miglioramento Chiave:</h5>
+          <Row className="g-4">
             <Col md={6} sm={12}>
-              <div className="improvement-area">
-                <h6>Negoziazione</h6>
-                <p>
-                  Prova a migliorare le tue tecniche di negoziazione per
-                  aumentare il tasso di conversione.
+              {/* Sfondo più scuro per far risaltare il bianco */}
+              <div className="p-4 rounded-4 shadow-sm" style={{ background: 'rgba(0, 0, 0, 0.4)', border: '1px solid rgba(255,255,255,0.15)' }}>
+                <h6 className="text-warning fw-bold mb-2 fs-5">Negoziazione</h6>
+                <p className="mb-0 text-white" style={{ fontSize: '0.95rem', lineHeight: '1.5', letterSpacing: '0.3px' }}>
+                  Prova a migliorare le tue tecniche di negoziazione per aumentare il tasso di conversione.
                 </p>
               </div>
             </Col>
             <Col md={6} sm={12}>
-              <div className="improvement-area">
-                <h6>Empatia</h6>
-                <p>
-                  Cerca di comprendere meglio le esigenze del cliente per
-                  creare un rapporto più solido.
+              <div className="p-4 rounded-4 shadow-sm" style={{ background: 'rgba(0, 0, 0, 0.4)', border: '1px solid rgba(255,255,255,0.15)' }}>
+                <h6 className="text-info fw-bold mb-2 fs-5">Empatia</h6>
+                <p className="mb-0 text-white" style={{ fontSize: '0.95rem', lineHeight: '1.5', letterSpacing: '0.3px' }}>
+                  Cerca di comprendere meglio le esigenze del cliente per creare un rapporto più solido.
                 </p>
               </div>
             </Col>
           </Row>
         </Card.Body>
       </Card>
-    </>
+    </div>
   );
 };
 

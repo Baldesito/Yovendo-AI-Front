@@ -1,84 +1,50 @@
-
 import React from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
-import "../index.css";
+
 
 function Footer() {
+  // Ottiene l'anno corrente dinamicamente
+  const currentYear = new Date().getFullYear();
+
   return (
-    <footer className="ft text-light py-4">
+    <footer className="ft text-light py-5 mt-auto glass-card" style={{ borderRadius: "24px 24px 0 0", borderBottom: "none" }}>
       <Container className="footer-container">
         <Row className="row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-4 mb-4">
-          <Col className="footer-links">
-            <p>
-              <a href="#" className="text-light" alt="footer link">
-                Privacy
-              </a>
-            </p>
-            <p>
-              <a href="#" className="text-light" alt="footer link">
-                Contattaci
-              </a>
-            </p>
+          <Col className="footer-links mb-3">
+            <p><a href="#" className="text-light opacity-75 text-decoration-none hover-primary">Privacy</a></p>
+            <p><a href="#" className="text-light opacity-75 text-decoration-none hover-primary">Contattaci</a></p>
           </Col>
-          <Col className="footer-links">
-            <p>
-              <a href="#" className="text-light" alt="footer link">
-                Relazioni con gli investitori
-              </a>
-            </p>
-            <p>
-              <a href="#" className="text-light" alt="footer link">
-                Note legali
-              </a>
-            </p>
+          <Col className="footer-links mb-3">
+            <p><a href="#" className="text-light opacity-75 text-decoration-none hover-primary">Relazioni con gli investitori</a></p>
+            <p><a href="#" className="text-light opacity-75 text-decoration-none hover-primary">Note legali</a></p>
           </Col>
-          <Col className="footer-links">
-            <p>
-              <a href="#" className="text-light" alt="footer link">
-                Centro assistenza
-              </a>
-            </p>
-            <p>
-              <a href="#" className="text-light" alt="footer link">
-                Lavora con noi
-              </a>
-            </p>
-            <p>
-              <a href="#" className="text-light" alt="footer link">
-                Preferenze cookie
-              </a>
-            </p>
+          <Col className="footer-links mb-3">
+            <p><a href="#" className="text-light opacity-75 text-decoration-none hover-primary">Centro assistenza</a></p>
+            <p><a href="#" className="text-light opacity-75 text-decoration-none hover-primary">Lavora con noi</a></p>
+            <p><a href="#" className="text-light opacity-75 text-decoration-none hover-primary">Preferenze cookie</a></p>
           </Col>
-          <Col className="footer-links">
-            <p>
-              <a href="#" className="text-light" alt="footer link">
-                Carte regalo
-              </a>
-            </p>
-            <p>
-              <a href="#" className="text-light" alt="footer link">
-                Termini di utilizzo
-              </a>
-            </p>
-            <p>
-              <a href="#" className="text-light" alt="footer link">
-                Informazioni aziendali
-              </a>
-            </p>
+          <Col className="footer-links mb-3">
+            <p><a href="#" className="text-light opacity-75 text-decoration-none hover-primary">Carte regalo</a></p>
+            <p><a href="#" className="text-light opacity-75 text-decoration-none hover-primary">Termini di utilizzo</a></p>
+            <p><a href="#" className="text-light opacity-75 text-decoration-none hover-primary">Informazioni aziendali</a></p>
           </Col>
         </Row>
-        <Row>
-          <Col className="mb-2">
+        <hr className="bg-light opacity-25" />
+        <Row className="align-items-center mt-3">
+          <Col md={6} className="mb-2 mb-md-0 text-md-start text-center">
             <Button
-              type="button"
-              className="btn-sm footer-button rounded-pill mt-3"
+              variant="outline-light"
+              size="sm"
+              className="rounded-pill px-4"
+              href="https://7vzefn.mimo.run/index.html"
+              target="_blank"
             >
-              <a href="https://7vzefn.mimo.run/index.html">Codice Servizio</a>
+              Codice Servizio
             </Button>
           </Col>
-        </Row>
-        <Row>
-          <Col className="mb-2 mt-2 copyright">© 2026 Yovendo</Col>
+          <Col md={6} className="text-md-end text-center opacity-50">
+            <small>© {currentYear} Yovendo. Tutti i diritti riservati.</small>
+          </Col>
         </Row>
       </Container>
     </footer>

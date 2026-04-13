@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Modal, Button, Form, Alert, Spinner } from "react-bootstrap";
 import { enhancedFetch } from "./Dashboard/API1";
 
-const FormAccedi = ({ show, onHide, onLogin }) => {
+//else
+const FormAccedi = ({ show, onHide}) => {
   const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState(""); 
   const [email, setEmail] = useState("");
@@ -13,9 +14,9 @@ const FormAccedi = ({ show, onHide, onLogin }) => {
   const [organizzazioneId, setOrganizzazioneId] = useState("");
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [serverStatus, setServerStatus] = useState('online'); // 'online', 'connecting', 'offline'
+  const [serverStatus, setServerStatus] = useState('online');
 
-  // Verifica lo stato del server 
+  // Verifica lo stato del server all'apertura del modale
   useEffect(() => {
     const checkServerStatus = async () => {
       try {
@@ -33,10 +34,10 @@ const FormAccedi = ({ show, onHide, onLogin }) => {
     }
   }, [show]);
 
-  // Carica le organizzazioni al montaggio del componente
+  // Carica le organizzazioni per il form di registrazione
   useEffect(() => {
     const fetchOrganizzazioni = async () => {
-      if (!show) return;
+      if (!show || isLogin) return; // Carica solo se stiamo registrando
       
       try {
         setIsLoading(true);
@@ -46,8 +47,7 @@ const FormAccedi = ({ show, onHide, onLogin }) => {
         console.error("Errore nel caricamento delle organizzazioni:", error);
         setMessage({ 
           type: "warning", 
-          text: "Non è stato possibile caricare le organizzazioni. " + 
-                (error.message || "Verifica la tua connessione internet.")
+          text: "Non è stato possibile caricare le organizzazioni. Riprova più tardi."
         });
       } finally {
         setIsLoading(false);
@@ -55,7 +55,7 @@ const FormAccedi = ({ show, onHide, onLogin }) => {
     };
 
     fetchOrganizzazioni();
-  }, [show]);
+  }, [show, isLogin]);
 
   const resetForm = () => {
     setUsername("");
@@ -67,6 +67,7 @@ const FormAccedi = ({ show, onHide, onLogin }) => {
     setMessage(null);
   };
 
+  // IL METODO DI SUBMIT REALE
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -80,7 +81,8 @@ const FormAccedi = ({ show, onHide, onLogin }) => {
           password,
           nome, 
           cognome, 
-          organizzazioneId: organizzazioneId || null  
+          // Se l'id è vuoto o stringa vuota, invia null o omettilo
+          organizzazioneId: organizzazioneId ? Number(organizzazioneId) : null  
         };
 
     try {
@@ -93,25 +95,15 @@ const FormAccedi = ({ show, onHide, onLogin }) => {
         body: JSON.stringify(payload),
       });
 
-      if (isLogin) {
-        // In caso di login, salva i dati utente e token
+ if (isLogin) {
+        // LOGIN SUCCESSO
+        
         localStorage.setItem("user", JSON.stringify(data));
-        setMessage({ 
-          type: "success", 
-          text: "Login effettuato con successo!"
-        });
-
-        setTimeout(() => {
-          setMessage(null);
-          onHide();
-          onLogin(data);
-        }, 1000);
-      } else {
-        // In caso di registrazione, mostra messaggio di successo
-        setMessage({ 
-          type: "success", 
-          text: "Registrazione completata! Ora puoi accedere con le tue credenziali."
-        });
+        setMessage({ type: "success", text: "Login effettuato con successo!" });
+      }
+       else {
+        // REGISTRAZIONE SUCCESSO
+        setMessage({ type: "success", text: "Registrazione completata! Ora puoi accedere." });
         
         setTimeout(() => {
           setIsLogin(true);
@@ -119,13 +111,12 @@ const FormAccedi = ({ show, onHide, onLogin }) => {
         }, 2000);
       }
     } catch (error) {
-      // Gestione degli errori più descrittiva
       let errorMessage = "Si è verificato un errore durante l'operazione.";
       
       if (error.message.includes("timeout")) {
-        errorMessage = "Il server sta impiegando troppo tempo a rispondere. Potrebbe essere in fase di avvio o sovraccarico.";
+        errorMessage = "Il server sta impiegando troppo tempo a rispondere.";
       } else if (error.message.includes("fetch")) {
-        errorMessage = "Impossibile connettersi al server. Verifica la tua connessione internet.";
+        errorMessage = "Impossibile connettersi al server.";
       } else {
         errorMessage = error.message;
       }
@@ -136,177 +127,86 @@ const FormAccedi = ({ show, onHide, onLogin }) => {
     }
   };
 
-  // Rendering condizionale per lo stato del server
   const renderServerStatus = () => {
     if (serverStatus === 'online') return null;
     
     return (
-      <Alert variant={serverStatus === 'connecting' ? 'warning' : 'danger'}>
+      <Alert variant={serverStatus === 'connecting' ? 'warning' : 'danger'} className="glass-alert border-0 text-white" style={{background: serverStatus === 'connecting' ? 'rgba(246, 224, 94, 0.2)' : 'rgba(252, 129, 129, 0.2)'}}>
         {serverStatus === 'connecting' ? (
-          <>
-            <Spinner animation="border" size="sm" className="me-2" />
-            Connessione al server in corso...
-          </>
+          <><Spinner animation="border" size="sm" className="me-2" /> Connessione in corso...</>
         ) : (
-          <>
-            Impossibile connettersi al server. Riprova più tardi o verifica la tua connessione internet.
-          </>
+          <>Server offline. Riprova più tardi.</>
         )}
       </Alert>
     );
   };
 
   return (
-    <Modal show={show} onHide={onHide} className="modal-form">
-      <Modal.Header closeButton className="header-accedi bg-black">
-        {" "}
-        <Modal.Title className="w-100 text-center ">
-          {isLogin ? "Accedi" : "Registrati"}
+    <Modal show={show} onHide={onHide} centered contentClassName="glass-modal border-0">
+      <Modal.Header closeButton closeVariant="white" className="border-0 pb-0">
+        <Modal.Title className="w-100 text-center fw-bold fs-3 text-white">
+          {isLogin ? "Bentornato" : "Crea un Account"}
         </Modal.Title>
-      </Modal.Header>{" "}
-      <Modal.Body className="modal-body bg-black ">
-        {" "}
+      </Modal.Header>
+      
+      <Modal.Body className="px-4 pb-4 pt-2">
         {renderServerStatus()}
-        {message && <Alert variant={message.type}>{message.text}</Alert>}
+        {message && (
+          <Alert variant={message.type} className="border-0 text-white" style={{background: message.type === 'success' ? 'rgba(104, 211, 145, 0.2)' : 'rgba(252, 129, 129, 0.2)'}}>
+            {message.text}
+          </Alert>
+        )}
         
         <Form onSubmit={handleSubmit}>
           {!isLogin && (
-            <>
-              <Form.Group className="mb-3 ">
-                <Form.Label>Username</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Inserisci username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  required
-                  minLength={3}
-                  maxLength={50}
-                  disabled={isLoading}
-                />
-              </Form.Group>
-
-              {/* Campi aggiuntivi per la registrazione */}
-              <Form.Group className="mb-3">
-                <Form.Label>Nome</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Inserisci nome"
-                  value={nome}
-                  onChange={(e) => setNome(e.target.value)}
-                  maxLength={50}
-                  disabled={isLoading}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3">
-                <Form.Label>Cognome</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Inserisci cognome"
-                  value={cognome}
-                  onChange={(e) => setCognome(e.target.value)}
-                  maxLength={50}
-                  disabled={isLoading}
-                />
-              </Form.Group>
-
-              {/* Select per l'organizzazione */}
+            <div className="row">
+              <div className="col-md-6 mb-3">
+                <Form.Control className="glass-input text-white placeholder-light" type="text" placeholder="Nome" value={nome} onChange={(e) => setNome(e.target.value)} disabled={isLoading} />
+              </div>
+              <div className="col-md-6 mb-3">
+                <Form.Control className="glass-input text-white placeholder-light" type="text" placeholder="Cognome" value={cognome} onChange={(e) => setCognome(e.target.value)} disabled={isLoading} />
+              </div>
+              <div className="col-12 mb-3">
+                <Form.Control className="glass-input text-white placeholder-light" type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required minLength={3} disabled={isLoading} />
+              </div>
+              
               {organizzazioni.length > 0 && (
-                <Form.Group className="mb-3">
-                  <Form.Label>Organizzazione</Form.Label>
-                  <Form.Select
-                    value={organizzazioneId}
-                    onChange={(e) => setOrganizzazioneId(e.target.value)}
+                <div className="col-12 mb-3">
+                  <Form.Select 
+                    className="glass-input text-white placeholder-light" 
+                    value={organizzazioneId} 
+                    onChange={(e) => setOrganizzazioneId(e.target.value)} 
                     disabled={isLoading}
                   >
-                    <option value="">Seleziona un'organizzazione</option>
+                    <option value="" style={{ backgroundColor: '#1e293b', color: 'white' }}>Seleziona organizzazione (Opzionale)</option>
                     {organizzazioni.map((org) => (
-                      <option key={org.id} value={org.id}>
+                      <option key={org.id} value={org.id} style={{ backgroundColor: '#1e293b', color: 'white' }}>
                         {org.nome}
                       </option>
                     ))}
                   </Form.Select>
-                </Form.Group>
+                </div>
               )}
-            </>
+            </div>
           )}
 
           <Form.Group className="mb-3">
-            <Form.Label>Email</Form.Label>
-            <Form.Control
-              type="email"
-              placeholder="Inserisci e-mail"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              maxLength={50}
-              disabled={isLoading}
-            />
+            <Form.Control className="glass-input text-white placeholder-light py-2" type="email" placeholder="Indirizzo E-mail" value={email} onChange={(e) => setEmail(e.target.value)} required disabled={isLoading} />
           </Form.Group>
 
-          <Form.Group className="mb-3">
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="Inserisci password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={6}
-              maxLength={100}
-              disabled={isLoading}
-            />
+          <Form.Group className="mb-4">
+            <Form.Control className="glass-input text-white placeholder-light py-2" type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} disabled={isLoading} />
           </Form.Group>
 
-          <div className="d-grid gap-2">
-            <Button 
-              className="btn accedi-form rounded-pill" 
-              type="submit"
-              disabled={isLoading || serverStatus !== 'online'}
-            >
-              {isLoading ? (
-                <>
-                  <Spinner animation="border" size="sm" className="me-2" />
-                  {isLogin ? "Accesso in corso..." : "Registrazione in corso..."}
-                </>
-              ) : (
-                isLogin ? "Accedi" : "Registrati"
-              )}
-            </Button>
-          </div>
+          <Button className="btn-cta w-100 rounded-pill py-2 fw-bold text-white" type="submit" disabled={isLoading || serverStatus === 'offline'}>
+            {isLoading ? <Spinner animation="border" size="sm" /> : (isLogin ? "Accedi" : "Registrati")}
+          </Button>
 
-          <div className="text-center mt-3">
+          <div className="text-center mt-4 text-light opacity-75">
             {isLogin ? (
-              <span>
-                Non hai un account?{" "}
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    resetForm();
-                    setIsLogin(false);
-                  }}
-                  style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
-                >
-                  Registrati ora
-                </a>
-              </span>
+              <p className="mb-0">Nuovo su Yovendo? <a href="#" className="text-primary-light fw-bold text-decoration-none hover-primary" onClick={(e) => { e.preventDefault(); resetForm(); setIsLogin(false); }}>Registrati ora</a></p>
             ) : (
-              <span>
-                Hai già un account?{" "}
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    resetForm();
-                    setIsLogin(true);
-                  }}
-                  style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
-                >
-                  Accedi ora
-                </a>
-              </span>
+              <p className="mb-0">Hai già un account? <a href="#" className="text-primary-light fw-bold text-decoration-none hover-primary" onClick={(e) => { e.preventDefault(); resetForm(); setIsLogin(true); }}>Accedi</a></p>
             )}
           </div>
         </Form>

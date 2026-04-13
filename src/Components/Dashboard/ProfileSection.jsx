@@ -1,7 +1,7 @@
-
 import React, { useState, useEffect } from "react";
 import { Card, Button, Form, Alert, Row, Col, Badge } from "react-bootstrap";
 import { FaUser, FaEdit, FaSave, FaKey } from "react-icons/fa";
+
 
 const ProfileSection = ({ user, setUser }) => {
   const [profileData, setProfileData] = useState({
@@ -92,88 +92,87 @@ const ProfileSection = ({ user, setUser }) => {
   };
 
   return (
-    <>
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2 className="mb-0 main-title">Il tuo Profilo</h2>
+    <div className="text-white">
+      <div className="d-flex justify-content-between align-items-center mb-4 mt-3">
+        <h2 className="mb-0 fw-bold">Il tuo Profilo</h2>
       </div>
       
       {updateSuccess && (
-        <Alert variant="success" className="mb-4">
+        <Alert variant="success" className="mb-4 glass-card border-0 text-white" style={{background: 'rgba(104, 211, 145, 0.2)'}}>
           Profilo aggiornato con successo!
         </Alert>
       )}
       
       {updateError && (
-        <Alert variant="danger" className="mb-4">
+        <Alert variant="danger" className="mb-4 glass-card border-0 text-white" style={{background: 'rgba(252, 129, 129, 0.2)'}}>
           {updateError}
         </Alert>
       )}
       
-      <Card className="mb-4">
-        <Card.Body className="p-3 p-md-4">
+      <Card className="glass-card mb-5 border-0">
+        <Card.Body className="p-4 p-md-5">
           <Row>
-            <Col md={4} className="text-center mb-4 mb-md-0">
+            <Col md={4} className="text-center mb-4 mb-md-0 border-end border-secondary border-opacity-25">
               <div 
-                className="profile-avatar mx-auto mb-3" 
+                className="profile-avatar mx-auto mb-4 shadow" 
                 style={{ 
-                  width: "120px", 
-                  height: "120px", 
-                  backgroundColor: "#67A1CE", 
-                  color: "white", 
-                  borderRadius: "50%", 
-                  display: "flex", 
-                  alignItems: "center", 
-                  justifyContent: "center", 
-                  fontSize: "60px" 
+                  width: "120px", height: "120px", 
+                  background: "linear-gradient(135deg, var(--primary), var(--secondary))", 
+                  color: "white", borderRadius: "50%", 
+                  display: "flex", alignItems: "center", justifyContent: "center", fontSize: "60px" 
                 }}
               >
                 {profileData.username?.charAt(0).toUpperCase() || "U"}
               </div>
-              <h4>{profileData.username || "Utente"}</h4>
-              <p className="text-muted">{profileData.email || "email@example.com"}</p>
-              <Badge bg={user?.role === "ADMIN" ? "danger" : "primary"}>
+              <h4 className="fw-bold text-white">{profileData.username || "Utente"}</h4>
+              <p className="text-light opacity-75">{profileData.email || "email@example.com"}</p>
+              <Badge bg={user?.role === "ADMIN" ? "danger" : "primary"} className="px-3 py-2 rounded-pill shadow-sm mb-3">
                 {user?.role || "USER"}
               </Badge>
               
-              <div className="mt-3">
-                <p className="mb-1">
-                  <strong>Ultimo accesso:</strong> {new Date().toLocaleDateString()}
+              <div className="mt-3 text-start bg-dark bg-opacity-25 p-3 rounded-3">
+                <p className="mb-2 text-light">
+                  <strong className="opacity-50 me-2 text-uppercase small">Ultimo accesso:</strong><br/>
+                  {new Date().toLocaleDateString()}
                 </p>
-                <p className="mb-1">
-                  <strong>Organizzazione:</strong> {user?.nomeOrganizzazione || "Nessuna"}
+                <p className="mb-1 text-light">
+                  <strong className="opacity-50 me-2 text-uppercase small">Organizzazione:</strong><br/>
+                  {user?.nomeOrganizzazione || "Nessuna"}
                 </p>
               </div>
             </Col>
-            <Col md={8}>
-              <h5 className="mb-4">
-                <FaEdit className="me-2" /> 
-                Modifica Informazioni Personali
+            
+            <Col md={8} className="ps-md-5">
+              <h5 className="mb-4 text-primary fw-bold">
+                <FaEdit className="me-2" /> Informazioni Personali
               </h5>
               <Form onSubmit={handleUpdateProfile}>
                 <Row>
                   <Col md={6}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Username</Form.Label>
+                    <Form.Group className="mb-4">
+                      <Form.Label className="opacity-75 small text-uppercase text-white tracking-wide">Username</Form.Label>
                       <Form.Control 
                         type="text" 
-                        name="username"
-                        value={profileData.username}
-                        onChange={handleProfileChange}
+                        name="username" 
+                        value={profileData.username} 
+                        onChange={handleProfileChange} 
+                        className="glass-input text-white" 
                         placeholder="Username"
-                        required
+                        required 
                       />
                     </Form.Group>
                   </Col>
                   <Col md={6}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Email</Form.Label>
+                    <Form.Group className="mb-4">
+                      <Form.Label className="opacity-75 small text-uppercase text-white tracking-wide">Email</Form.Label>
                       <Form.Control 
                         type="email" 
-                        name="email"
-                        value={profileData.email}
-                        onChange={handleProfileChange}
+                        name="email" 
+                        value={profileData.email} 
+                        onChange={handleProfileChange} 
+                        className="glass-input text-white" 
                         placeholder="Email"
-                        required
+                        required 
                       />
                     </Form.Group>
                   </Col>
@@ -181,92 +180,82 @@ const ProfileSection = ({ user, setUser }) => {
                 
                 <Row>
                   <Col md={6}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Nome</Form.Label>
+                    <Form.Group className="mb-4">
+                      <Form.Label className="opacity-75 small text-white text-uppercase tracking-wide">Nome</Form.Label>
                       <Form.Control 
                         type="text" 
-                        name="nome"
-                        value={profileData.nome}
-                        onChange={handleProfileChange}
+                        name="nome" 
+                        value={profileData.nome} 
+                        onChange={handleProfileChange} 
+                        className="glass-input text-white placeholder-light" 
                         placeholder="Nome"
                       />
                     </Form.Group>
                   </Col>
                   <Col md={6}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Cognome</Form.Label>
+                    <Form.Group className="mb-4">
+                      <Form.Label className="opacity-75 small text-white text-uppercase tracking-wide">Cognome</Form.Label>
                       <Form.Control 
                         type="text" 
-                        name="cognome"
-                        value={profileData.cognome}
-                        onChange={handleProfileChange}
+                        name="cognome" 
+                        value={profileData.cognome} 
+                        onChange={handleProfileChange} 
+                        className="glass-input text-white placeholder-light" 
                         placeholder="Cognome"
                       />
                     </Form.Group>
                   </Col>
                 </Row>
                 
-                <h5 className="mt-4 mb-3">
-                  <FaKey className="me-2" /> 
-                  Cambio Password
+                <h5 className="mt-4 mb-4 text-primary fw-bold">
+                  <FaKey className="me-2" /> Cambio Password
                 </h5>
                 
                 <Row>
                   <Col md={6}>
                     <Form.Group className="mb-3">
-                      <Form.Label>Nuova Password</Form.Label>
+                      <Form.Label className="opacity-75 small text-white text-uppercase tracking-wide">Nuova Password</Form.Label>
                       <Form.Control 
                         type={showPassword ? "text" : "password"}
                         name="password"
                         value={profileData.password}
                         onChange={handleProfileChange}
+                        className="glass-input text-white placeholder-light"
                         placeholder="Lascia vuoto per non cambiare"
                       />
                     </Form.Group>
                   </Col>
                   <Col md={6}>
                     <Form.Group className="mb-3">
-                      <Form.Label>Conferma Password</Form.Label>
+                      <Form.Label className="opacity-75 small text-white text-uppercase tracking-wide">Conferma Password</Form.Label>
                       <Form.Control 
                         type={showPassword ? "text" : "password"}
                         name="confirmPassword"
                         value={profileData.confirmPassword}
                         onChange={handleProfileChange}
+                        className="glass-input text-white placeholder-light"
                         placeholder="Conferma la nuova password"
                       />
                     </Form.Group>
                   </Col>
                 </Row>
                 
-                <Form.Group className="mb-3">
+                <Form.Group className="mb-4">
                   <Form.Check 
                     type="checkbox" 
                     label="Mostra password" 
                     checked={showPassword}
                     onChange={() => setShowPassword(!showPassword)}
+                    className="text-light opacity-75"
                   />
                 </Form.Group>
                 
-                <Form.Text className="text-muted d-block mb-3">
-                  Compila i campi password solo se desideri cambiarla. La password deve essere di almeno 6 caratteri.
-                </Form.Text>
-                
-                <div className="d-flex justify-content-end">
-                  <Button 
-                    variant="primary" 
-                    type="submit" 
-                    className="rounded-pill"
-                    disabled={updating}
-                  >
+                <div className="d-flex justify-content-end mt-4 pt-4 border-top border-secondary border-opacity-25">
+                  <Button variant="primary" type="submit" className="btn-cta rounded-pill px-5 py-2 fw-bold" disabled={updating}>
                     {updating ? (
-                      <>
-                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                        Aggiornamento in corso...
-                      </>
+                      <><span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Aggiornamento...</>
                     ) : (
-                      <>
-                        <FaSave className="me-2" /> Aggiorna Profilo
-                      </>
+                      <><FaSave className="me-2" /> Salva Modifiche</>
                     )}
                   </Button>
                 </div>
@@ -276,45 +265,53 @@ const ProfileSection = ({ user, setUser }) => {
         </Card.Body>
       </Card>
       
-      <Card>
-        <Card.Header className="bg-primary text-white">
-          <h5 className="mb-0">Impostazioni Account</h5>
+      <Card className="glass-card border-0 mb-5">
+        <Card.Header className="border-0 bg-transparent pt-4 pb-0 px-4 px-md-5">
+          <h5 className="mb-0 text-primary fw-bold">Impostazioni Account</h5>
         </Card.Header>
-        <Card.Body>
+        <Card.Body className="p-4 p-md-5">
           <Row>
-            <Col md={6}>
-              <h6>Preferenze di Notifica</h6>
-              <Form.Group className="mb-3">
-                <Form.Check 
-                  type="checkbox" 
-                  label="Notifiche email per nuove conversazioni" 
-                  defaultChecked
-                />
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Check 
-                  type="checkbox" 
-                  label="Notifiche email per documenti elaborati" 
-                  defaultChecked
-                />
-              </Form.Group>
+            <Col md={6} className="mb-4 mb-md-0">
+              <h6 className="text-white fw-bold mb-3">Preferenze di Notifica</h6>
+              <div className="bg-dark bg-opacity-25 p-4 rounded-4">
+                <Form.Group className="mb-3">
+                  <Form.Check 
+                    type="checkbox" 
+                    label="Notifiche email per nuove conversazioni" 
+                    defaultChecked
+                    className="text-light"
+                  />
+                </Form.Group>
+                <Form.Group className="mb-0">
+                  <Form.Check 
+                    type="checkbox" 
+                    label="Notifiche email per documenti elaborati" 
+                    defaultChecked
+                    className="text-light"
+                  />
+                </Form.Group>
+              </div>
             </Col>
             <Col md={6}>
-              <h6>Sicurezza</h6>
-              <Form.Group className="mb-3">
-                <Form.Check 
-                  type="checkbox" 
-                  label="Abilita autenticazione a due fattori" 
-                />
-              </Form.Group>
-              <Button variant="outline-secondary" size="sm" className="mt-2">
-                Gestisci dispositivi connessi
-              </Button>
+              <h6 className="text-white fw-bold mb-3">Sicurezza</h6>
+              <div className="bg-dark bg-opacity-25 p-4 rounded-4 h-100 d-flex flex-column justify-content-center">
+                <Form.Group className="mb-4">
+                  <Form.Check 
+                    type="switch"
+                    id="2fa-switch"
+                    label="Abilita autenticazione a due fattori (2FA)" 
+                    className="text-light"
+                  />
+                </Form.Group>
+                <Button variant="outline-light" className="rounded-pill align-self-start opacity-75 hover-primary">
+                  Gestisci dispositivi connessi
+                </Button>
+              </div>
             </Col>
           </Row>
         </Card.Body>
       </Card>
-    </>
+    </div>
   );
 };
 

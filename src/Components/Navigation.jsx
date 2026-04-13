@@ -1,64 +1,44 @@
-
-import React, { useState, useEffect } from "react";
-import { Navbar, Nav, Container, Button } from "react-bootstrap";
+import React, { useState } from "react";
+import { Navbar, Nav, Container, Button, Dropdown } from "react-bootstrap";
 import FormAccedi from "./FormAccedi";
-import "../index.css";
-import { Dropdown } from "react-bootstrap";
 import ProfiloDrpDown from "./ProfiloDrpDown";
 
-
-
-const Navigation = () => {
+const Navigation = ({ user, onLogout }) => {
   const [showModal, setShowModal] = useState(false);
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (storedUser) {
-      setUser(storedUser);
-    }
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    setUser(null);
-    window.location.reload();
-  };
 
   return (
-    <div className="gradient-bg">
-      <Navbar defaultExpanded expand="lg" variant="dark" className="custom-navbar">
-        <Container>
-          <Navbar.Brand href="/">
-            <span className="nome-sito">Yovendo-AI</span>
-            <img src="/yovendo-ai.svg" alt="Logo" className="logo" />
-          </Navbar.Brand>
+    <Container className="pt-3 mb-3" style={{ position: "relative", zIndex: 1050 }}>
+      <Navbar expand="lg" variant="dark" className="custom-navbar glass-nav px-4">
+        <Navbar.Brand href="/" className="d-flex align-items-center">
+          {/* Logo Ingrandito e Spostato a Sinistra */}
+          <img src="/yovendo-ai.svg" alt="Logo" className="me-3" style={{ width: "45px", height: "auto" }} />
+          <span className="nome-sito fw-bold text-white fs-4">Yovendo.<span className="text-primary">AI</span></span>
+        </Navbar.Brand>
 
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="ms-auto">
-              <Nav.Link href="/">Home</Nav.Link>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" className="border-0" />
+        
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="ms-auto align-items-center">
+            <Nav.Link href="/" className="text-white hover-primary me-3 fw-semibold">Home</Nav.Link>
 
-              {user ? (
-                <Dropdown align="end">
-                  <ProfiloDrpDown user={user} onLogout={handleLogout} />
-                </Dropdown>
-              ) : (
-                <Button
-                  variant="outline-light rounded-pill"
-                  onClick={() => setShowModal(true)}
-                >
-                  Accedi
-                </Button>
-              )}
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
+            {user ? (
+              <Dropdown align="end">
+                <ProfiloDrpDown user={user} onLogout={onLogout} />
+              </Dropdown>
+            ) : (
+              <Button
+                className="btn-cta rounded-pill px-4 py-2 fw-bold"
+                onClick={() => setShowModal(true)}
+              >
+                Accedi
+              </Button>
+            )}
+          </Nav>
+        </Navbar.Collapse>
       </Navbar>
 
       <FormAccedi show={showModal} onHide={() => setShowModal(false)} />
-    </div>
-
+    </Container>
   );
 };
 

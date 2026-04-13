@@ -1,353 +1,200 @@
-
 import React, { useState, useEffect } from "react";
-import { Card, Button, Form, Accordion, Alert, Row, Col } from "react-bootstrap";
+
+import { Card, Button, Form, Accordion, Alert, Row, Col, Badge } from "react-bootstrap";
 import { FaRobot, FaClipboard, FaWhatsapp, FaLink, FaCog, FaSave } from "react-icons/fa";
 
 const AISettingsSection = ({ user, testWhatsApp }) => {
   const [aiSettings, setAiSettings] = useState({
-    model: "gpt-3.5-turbo",
-    temperature: 0.7,
-    embeddingModel: "text-embedding-ada-002",
-    maxDocsPerQuery: 5,
-    maxChunkSize: 1000,
-    provider: "twilio",
-    twilioAccountSid: "",
-    twilioAuthToken: "",
-    defaultWhatsappNumber: ""
+    model: "gpt-3.5-turbo", temperature: 0.7, embeddingModel: "text-embedding-ada-002",
+    maxDocsPerQuery: 5, maxChunkSize: 1000, provider: "twilio", twilioAccountSid: "",
+    twilioAuthToken: "", defaultWhatsappNumber: ""
   });
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError, setSaveError] = useState(null);
 
-  // Carica le impostazioni correnti
   useEffect(() => {
-    // In una implementazione reale, caricheremmo queste impostazioni dal backend
-    // fetchAISettings();
-    
-    // Per ora, simuliamo un ritardo di caricamento
     const timer = setTimeout(() => {
-      // Valori di esempio
       setAiSettings({
-        model: "gpt-3.5-turbo",
-        temperature: 0.7,
-        embeddingModel: "text-embedding-ada-002",
-        maxDocsPerQuery: 5,
-        maxChunkSize: 1000,
-        provider: "twilio",
-        twilioAccountSid: "AC***************",
-        twilioAuthToken: "***************",
-        defaultWhatsappNumber: "+39 345 1234567"
+        model: "gpt-3.5-turbo", temperature: 0.7, embeddingModel: "text-embedding-ada-002",
+        maxDocsPerQuery: 5, maxChunkSize: 1000, provider: "twilio", 
+        twilioAccountSid: "AC***************", twilioAuthToken: "***************", defaultWhatsappNumber: "+39 345 1234567"
       });
     }, 500);
-    
     return () => clearTimeout(timer);
   }, []);
 
-  // Handler per aggiornare i campi delle impostazioni
-  const handleSettingChange = (e) => {
-    const { name, value } = e.target;
-    setAiSettings(prev => ({ ...prev, [name]: value }));
-  };
+  const handleSettingChange = (e) => { setAiSettings(prev => ({ ...prev, [e.target.name]: e.target.value })); };
 
-  // Handler per salvare le impostazioni
   const handleSaveSettings = async () => {
-    setSaving(true);
-    setSaveSuccess(false);
-    setSaveError(null);
-    
+    setSaving(true); setSaveSuccess(false); setSaveError(null);
     try {
-      // In una implementazione reale, salveremmo queste impostazioni nel backend
-      // await updateAISettings(user.token, aiSettings);
-      
-      // Simuliamo un ritardo
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
-    } catch (error) {
-      console.error("Errore nel salvataggio delle impostazioni:", error);
-      setSaveError("Si è verificato un errore durante il salvataggio delle impostazioni.");
+      
+    } //eslint-disable-next-line
+    catch  (error) {
+      setSaveError("Errore salvataggio impostazioni.");
     } finally {
       setSaving(false);
     }
   };
 
-  // Handler per testare la connessione WhatsApp
   const handleTestWhatsApp = async () => {
     try {
       const response = await testWhatsApp(user.token);
       alert(response);
     } catch (error) {
-      alert("Errore nel test della connessione WhatsApp: " + error.message);
+      alert("Errore test WhatsApp: " + error.message);
     }
   };
 
   return (
-    <>
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2 className="mb-0 main-title">Impostazioni AI</h2>
-        <Button 
-          variant="primary" 
-          className="rounded-pill"
-          onClick={handleSaveSettings}
-          disabled={saving}
-        >
-          {saving ? (
-            <>
-              <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-              Salvataggio...
-            </>
-          ) : (
-            <>
-              <FaSave className="me-2" /> Salva Impostazioni
-            </>
-          )}
+    <div className="text-white">
+      <div className="d-flex justify-content-between align-items-center mb-4 mt-3">
+        <h2 className="mb-0 fw-bold">Impostazioni AI</h2>
+        <Button className="btn-cta rounded-pill px-4 fw-bold d-flex align-items-center" onClick={handleSaveSettings} disabled={saving}>
+          {saving ? <><span className="spinner-border spinner-border-sm me-2"></span> Salvataggio...</> : <><FaSave className="me-2" /> Salva Tutto</>}
         </Button>
       </div>
       
-      {saveSuccess && (
-        <Alert variant="success" className="mb-4">
-          Impostazioni salvate con successo!
-        </Alert>
-      )}
+      {saveSuccess && <Alert variant="success" className="glass-card border-0 text-white" style={{background:'rgba(104,211,145,0.2)'}}>Impostazioni salvate!</Alert>}
+      {saveError && <Alert variant="danger" className="glass-card border-0 text-white" style={{background:'rgba(252,129,129,0.2)'}}>{saveError}</Alert>}
       
-      {saveError && (
-        <Alert variant="danger" className="mb-4">
-          {saveError}
-        </Alert>
-      )}
-      
-      <Card className="mb-4">
-        <Card.Body className="p-3 p-md-4">
-          <h5 className="mb-4">
-            <FaCog className="me-2" />
-            Configurazione Intelligenza Artificiale
-          </h5>
+      <Card className="glass-card border-0 mb-5">
+        <Card.Body className="p-4 p-md-5">
+          <h5 className="mb-4 text-primary fw-bold d-flex align-items-center"><FaCog className="me-2 fs-4" /> Configurazione AI Base</h5>
           
-          <Accordion defaultActiveKey="0" className="mb-4">
-            <Accordion.Item eventKey="0">
-              <Accordion.Header>
-                <FaRobot className="me-2" /> Modello AI
-              </Accordion.Header>
-              <Accordion.Body>
-                <Form.Group className="mb-3">
-                  <Form.Label>Modello di AI da utilizzare</Form.Label>
-                  <Form.Select
-                    name="model"
-                    value={aiSettings.model}
-                    onChange={handleSettingChange}
-                  >
-                    <option value="gpt-3.5-turbo">OpenAI GPT-3.5 Turbo</option>
-                    <option value="gpt-4">OpenAI GPT-4</option>
-                    <option value="gemini-pro">Google Gemini Pro</option>
-                    <option value="claude-3-opus">Anthropic Claude 3 Opus</option>
+          <Accordion defaultActiveKey="0" className="mb-5 custom-accordion">
+            
+            <Accordion.Item eventKey="0" className="mb-3 rounded-3 overflow-hidden">
+              <Accordion.Header><FaRobot className="me-2 text-primary" /> Modello Generativo (LLM)</Accordion.Header>
+              <Accordion.Body className="p-4">
+                <Form.Group className="mb-4">
+                  <Form.Label className="opacity-75 small text-uppercase">Provider & Modello</Form.Label>
+                  <Form.Select name="model" className="glass-input text-white" value={aiSettings.model} onChange={handleSettingChange}>
+                    <option value="gpt-3.5-turbo" style={{color:'black'}}>OpenAI GPT-3.5 Turbo (Veloce/Economico)</option>
+                    <option value="gpt-4" style={{color:'black'}}>OpenAI GPT-4 (Complesso/Lento)</option>
+                    <option value="gemini-pro" style={{color:'black'}}>Google Gemini Pro</option>
                   </Form.Select>
-                  <Form.Text className="text-muted">
-                    Il modello scelto influisce sulla qualità delle risposte e sui costi
-                  </Form.Text>
                 </Form.Group>
-                
-                <Form.Group className="mb-3">
-                  <Form.Label>Temperatura di risposta: {aiSettings.temperature}</Form.Label>
-                  <Form.Range 
-                    min="0" 
-                    max="10" 
-                    step="1" 
-                    name="temperature"
-                    value={aiSettings.temperature * 10}
-                    onChange={e => setAiSettings(prev => ({ 
-                      ...prev, 
-                      temperature: parseFloat(e.target.value) / 10 
-                    }))}
-                  />
-                  <div className="d-flex justify-content-between">
-                    <span className="text-muted small">Preciso (0.0)</span>
-                    <span className="text-muted small">Bilanciato (0.7)</span>
-                    <span className="text-muted small">Creativo (1.0)</span>
+                <Form.Group className="mb-2">
+                  <div className="d-flex justify-content-between align-items-end mb-2">
+                    <Form.Label className="opacity-75 small text-uppercase m-0">Temperatura / Creatività</Form.Label>
+                    <Badge bg="primary" className="rounded-pill px-3">{aiSettings.temperature}</Badge>
+                  </div>
+                  <Form.Range min="0" max="10" step="1" className="custom-range" value={aiSettings.temperature * 10} onChange={e => setAiSettings(prev => ({ ...prev, temperature: parseFloat(e.target.value) / 10 }))} />
+                  <div className="d-flex justify-content-between mt-2 opacity-50 small">
+                    <span>Robotica (0.0)</span><span>Equilibrata (0.7)</span><span>Creativa (1.0)</span>
                   </div>
                 </Form.Group>
               </Accordion.Body>
             </Accordion.Item>
             
-            <Accordion.Item eventKey="1">
-              <Accordion.Header>
-                <FaClipboard className="me-2" /> Sistema RAG
-              </Accordion.Header>
-              <Accordion.Body>
-                <Form.Group className="mb-3">
-                  <Form.Label>Modello di embedding</Form.Label>
-                  <Form.Select
-                    name="embeddingModel"
-                    value={aiSettings.embeddingModel}
-                    onChange={handleSettingChange}
-                  >
-                    <option value="text-embedding-ada-002">OpenAI Ada 002</option>
-                    <option value="text-embedding-3-small">OpenAI Embedding 3 Small</option>
-                    <option value="text-embedding-3-large">OpenAI Embedding 3 Large</option>
-                  </Form.Select>
-                </Form.Group>
-                
-                <Form.Group className="mb-3">
-                  <Form.Label>Numero massimo di documenti per query</Form.Label>
-                  <Form.Control 
-                    type="number" 
-                    min="1" 
-                    max="10" 
-                    name="maxDocsPerQuery"
-                    value={aiSettings.maxDocsPerQuery}
-                    onChange={handleSettingChange}
-                  />
-                  <Form.Text className="text-muted">
-                    Quanti documenti rilevanti includere nel contesto per ogni query
-                  </Form.Text>
-                </Form.Group>
-                
-                <Form.Group className="mb-3">
-                  <Form.Label>Dimensione massima chunk</Form.Label>
-                  <Form.Control 
-                    type="number" 
-                    min="100" 
-                    max="8000" 
-                    step="100" 
-                    name="maxChunkSize"
-                    value={aiSettings.maxChunkSize}
-                    onChange={handleSettingChange}
-                  />
-                  <Form.Text className="text-muted">
-                    Dimensione massima in caratteri per ogni chunk di documento
-                  </Form.Text>
-                </Form.Group>
+            <Accordion.Item eventKey="1" className="mb-3 rounded-3 overflow-hidden">
+              <Accordion.Header><FaClipboard className="me-2 text-warning" /> Sistema RAG (Lettura Documenti)</Accordion.Header>
+              <Accordion.Body className="p-4">
+                <Row>
+                  <Col md={12} className="mb-4">
+                    <Form.Group>
+                      <Form.Label className="opacity-75 small text-uppercase">Modello Embeddings</Form.Label>
+                      <Form.Select name="embeddingModel" className="glass-input text-white" value={aiSettings.embeddingModel} onChange={handleSettingChange}>
+                        <option value="text-embedding-ada-002" style={{color:'black'}}>OpenAI Ada-002</option>
+                        <option value="text-embedding-3-small" style={{color:'black'}}>OpenAI 3-Small</option>
+                      </Form.Select>
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group className="mb-3">
+                      <Form.Label className="opacity-75 small text-uppercase">Max Doc per Query</Form.Label>
+                      <Form.Control type="number" className="glass-input text-white" min="1" max="10" name="maxDocsPerQuery" value={aiSettings.maxDocsPerQuery} onChange={handleSettingChange} />
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group className="mb-3">
+                      <Form.Label className="opacity-75 small text-uppercase">Chunk Size (Caratteri)</Form.Label>
+                      <Form.Control type="number" className="glass-input text-white" min="100" max="8000" step="100" name="maxChunkSize" value={aiSettings.maxChunkSize} onChange={handleSettingChange} />
+                    </Form.Group>
+                  </Col>
+                </Row>
               </Accordion.Body>
             </Accordion.Item>
             
-            <Accordion.Item eventKey="2">
-              <Accordion.Header>
-                <FaWhatsapp className="me-2" /> Configurazione WhatsApp
-              </Accordion.Header>
-              <Accordion.Body>
-                <Form.Group className="mb-3">
-                  <Form.Label>Provider WhatsApp</Form.Label>
-                  <Form.Select
-                    name="provider"
-                    value={aiSettings.provider}
-                    onChange={handleSettingChange}
-                  >
-                    <option value="twilio">Twilio</option>
-                    <option value="360dialog">360Dialog</option>
-                  </Form.Select>
-                </Form.Group>
-                
-                <Form.Group className="mb-3">
-                  <Form.Label>Twilio Account SID</Form.Label>
-                  <Form.Control 
-                    type="text" 
-                    name="twilioAccountSid"
-                    placeholder="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" 
-                    value={aiSettings.twilioAccountSid}
-                    onChange={handleSettingChange}
-                  />
-                </Form.Group>
-                
-                <Form.Group className="mb-3">
-                 
-                  <Form.Label>Twilio Auth Token</Form.Label>
-                  <Form.Control 
-                    type="password" 
-                    name="twilioAuthToken"
-                    placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" 
-                    value={aiSettings.twilioAuthToken}
-                    onChange={handleSettingChange}
-                  />
-                </Form.Group>
-                
-                <Form.Group className="mb-3">
-                  <Form.Label>Numero WhatsApp Predefinito</Form.Label>
-                  <Form.Control 
-                    type="text" 
-                    name="defaultWhatsappNumber"
-                    placeholder="+39 123 4567890" 
-                    value={aiSettings.defaultWhatsappNumber}
-                    onChange={handleSettingChange}
-                  />
-                </Form.Group>
-                
-                <Button 
-                  variant="primary" 
-                  className="rounded-pill"
-                  onClick={handleTestWhatsApp}
-                >
-                  <FaLink className="me-2" /> Test Connessione WhatsApp
-                </Button>
+            <Accordion.Item eventKey="2" className="rounded-3 overflow-hidden">
+              <Accordion.Header><FaWhatsapp className="me-2 text-success" /> API WhatsApp</Accordion.Header>
+              <Accordion.Body className="p-4">
+                <Row>
+                  <Col md={12} className="mb-4">
+                    <Form.Group>
+                      <Form.Label className="opacity-75 small text-uppercase">Provider Messaging</Form.Label>
+                      <Form.Select name="provider" className="glass-input text-white" value={aiSettings.provider} onChange={handleSettingChange}>
+                        <option value="twilio" style={{color:'black'}}>Twilio API</option>
+                        <option value="360dialog" style={{color:'black'}}>360Dialog</option>
+                      </Form.Select>
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group className="mb-4">
+                      <Form.Label className="opacity-75 small text-uppercase">Account SID</Form.Label>
+                      <Form.Control type="text" className="glass-input text-white placeholder-light" name="twilioAccountSid" placeholder="ACxxx..." value={aiSettings.twilioAccountSid} onChange={handleSettingChange} />
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group className="mb-4">
+                      <Form.Label className="opacity-75 small text-uppercase">Auth Token</Form.Label>
+                      <Form.Control type="password" className="glass-input text-white placeholder-light" name="twilioAuthToken" placeholder="Tokens segreto" value={aiSettings.twilioAuthToken} onChange={handleSettingChange} />
+                    </Form.Group>
+                  </Col>
+                </Row>
+                <div className="d-flex align-items-center justify-content-between border-top border-secondary border-opacity-25 pt-4 mt-2">
+                  <div>
+                    <Form.Label className="opacity-75 small text-uppercase mb-1">Numero Bot</Form.Label>
+                    <p className="fw-bold mb-0 text-success">{aiSettings.defaultWhatsappNumber}</p>
+                  </div>
+                  <Button variant="outline-light" className="rounded-pill hover-primary opacity-75" onClick={handleTestWhatsApp}>
+                    <FaLink className="me-2" /> Ping Twilio
+                  </Button>
+                </div>
               </Accordion.Body>
             </Accordion.Item>
           </Accordion>
           
-          <Row className="mt-4">
-            <Col>
-              <h5 className="mb-3">Prompts Predefiniti</h5>
-              <Form.Group className="mb-3">
-                <Form.Label>Prompt di Benvenuto</Form.Label>
-                <Form.Control 
-                  as="textarea" 
-                  rows={3}
-                  name="welcomePrompt"
-                  placeholder="Inserisci il messaggio di benvenuto che verrà inviato all'inizio di ogni conversazione"
-                  value={aiSettings.welcomePrompt || "👋 Benvenuto! Sono l'assistente virtuale di Yovendo. Come posso aiutarti oggi?"}
-                  onChange={handleSettingChange}
-                />
-              </Form.Group>
-            </Col>
-          </Row>
-          
-          <div className="d-flex justify-content-end">
-            <Button 
-              variant="primary" 
-              className="rounded-pill"
-              onClick={handleSaveSettings}
-              disabled={saving}
-            >
-              {saving ? (
-                <>
-                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                  Salvataggio in corso...
-                </>
-              ) : (
-                <>
-                  <FaSave className="me-2" /> Salva Impostazioni
-                </>
-              )}
-            </Button>
-          </div>
+          <h5 className="mb-4 mt-5 text-primary fw-bold">Prompts di Sistema</h5>
+          <Form.Group className="mb-3">
+            <Form.Label className="opacity-75 text-secondary small text-uppercase">Prompt di Benvenuto Iniziale</Form.Label>
+            <Form.Control 
+              as="textarea" rows={4} 
+              className="glass-input text-white placeholder-light" 
+              name="welcomePrompt"
+              placeholder="Messaggio inviato al primo contatto"
+              value={aiSettings.welcomePrompt || "👋 Benvenuto! Sono l'assistente virtuale. Come posso aiutarti?"}
+              onChange={handleSettingChange}
+            />
+          </Form.Group>
         </Card.Body>
       </Card>
       
-      <Card>
-        <Card.Header className="bg-primary text-white">
-          <h5 className="mb-0">Note sull'Utilizzo</h5>
-        </Card.Header>
-        <Card.Body>
-          <h6>Gestione delle API</h6>
-          <p>
-            Per utilizzare i modelli di intelligenza artificiale, è necessario configurare correttamente le API key.
-            Assicurati di non condividere queste chiavi con persone non autorizzate.
-          </p>
-          
-          <h6>Best Practices per RAG</h6>
-          <ul>
-            <li>Utilizza documenti di qualità per migliorare le risposte</li>
-            <li>Dividi documenti lunghi in chunk più piccoli per una migliore ricerca</li>
-            <li>Usa temperature più basse (0.2-0.4) per risposte più fattuali</li>
-            <li>Aumenta la temperature (0.7-0.9) per risposte più creative</li>
-          </ul>
-          
-          <h6>Integrazione WhatsApp</h6>
-          <p>
-            Per l'integrazione con WhatsApp Business API, è necessario avere un account Twilio o 360Dialog attivo.
-            Il numero WhatsApp deve essere verificato e approvato per l'utilizzo con l'API.
-          </p>
+      <Card className="glass-card border-0 mb-5">
+        <Card.Body className="p-4 p-md-5">
+          <h5 className="fw-bold mb-4 text-white">Guida Rapida</h5>
+          <Row className="g-4 opacity-75">
+            <Col md={4}>
+              <h6 className="text-warning">RAG (Retrieval)</h6>
+              <p className="small">Il sistema RAG usa i documenti caricati per fornire risposte pertinenti. Chunk più piccoli aumentano la precisione ma riducono il contesto.</p>
+            </Col>
+            <Col md={4}>
+              <h6 className="text-primary">Modelli LLM</h6>
+              <p className="small">GPT-3.5 è perfetto per l'assistenza rapida clienti. Passa a GPT-4 solo se il bot deve analizzare lunghi contratti o ragionare profondamente.</p>
+            </Col>
+            <Col md={4}>
+              <h6 className="text-success">WhatsApp</h6>
+              <p className="small">Le API Twilio permettono di usare un sandbox per test limitati. Per produzione occorre verificare il business su Meta.</p>
+            </Col>
+          </Row>
         </Card.Body>
       </Card>
-    </>
+    </div>
   );
 };
 

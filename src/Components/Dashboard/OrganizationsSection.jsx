@@ -1,7 +1,7 @@
-
 import React, { useState } from "react";
 import { Card, Button, Form, InputGroup, Badge, Table } from "react-bootstrap";
 import { FaPlus, FaSearch, FaUsers, FaTrash, FaEdit, FaWhatsapp } from "react-icons/fa";
+
 
 const OrganizationsSection = ({ user, organizations, createOrganization, refreshData }) => {
   const [showNewOrgForm, setShowNewOrgForm] = useState(false);
@@ -13,13 +13,11 @@ const OrganizationsSection = ({ user, organizations, createOrganization, refresh
   });
   const [creatingOrg, setCreatingOrg] = useState(false);
 
-  // Handler per aggiornare i campi della nuova organizzazione
   const handleOrgChange = (e) => {
     const { name, value } = e.target;
     setNewOrgData(prev => ({ ...prev, [name]: value }));
   };
 
-  // Handler per creare una nuova organizzazione
   const handleCreateOrg = async (e) => {
     e.preventDefault();
     
@@ -47,11 +45,9 @@ const OrganizationsSection = ({ user, organizations, createOrganization, refresh
     }
   };
 
-  // Funzione per eliminare un'organizzazione
   const handleDeleteOrg = async () => {
     if (window.confirm("Sei sicuro di voler eliminare questa organizzazione? Questa azione non può essere annullata.")) {
       try {
-        // Implementare la chiamata API per eliminare un'organizzazione
         // await deleteOrganization(user.token, id);
         alert("Funzionalità da implementare con l'API di eliminazione organizzazioni");
         refreshData("organizations");
@@ -62,96 +58,77 @@ const OrganizationsSection = ({ user, organizations, createOrganization, refresh
     }
   };
 
-  // Filtraggio organizzazioni in base alla ricerca
   const filteredOrgs = organizations.filter(org => 
     org.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (org.numeroWhatsapp && org.numeroWhatsapp.includes(searchTerm))
   );
 
   return (
-    <>
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2 className="mb-0 main-title">Gestione Organizzazioni</h2>
-        <Button 
-          variant="primary" 
-          className="rounded-pill"
-          onClick={() => setShowNewOrgForm(!showNewOrgForm)}
-        >
+    <div className="text-white">
+      <div className="d-flex justify-content-between align-items-center mb-4 mt-3">
+        <h2 className="mb-0 fw-bold">Organizzazioni</h2>
+        <Button className="btn-cta rounded-pill px-4 fw-bold" onClick={() => setShowNewOrgForm(!showNewOrgForm)}>
           <FaPlus className="me-2" /> Nuova Organizzazione
         </Button>
       </div>
       
-      {/* Form per creare una nuova organizzazione */}
       {showNewOrgForm && (
-        <Card className="mb-4">
-          <Card.Header className="bg-primary text-white">
-            <h5 className="mb-0">Aggiungi Nuova Organizzazione</h5>
+        <Card className="glass-card mb-5 border-0">
+          <Card.Header className="border-0 pt-4 px-4 bg-transparent">
+            <h5 className="mb-0 fw-bold">Aggiungi Nuova Organizzazione</h5>
           </Card.Header>
-          <Card.Body className="p-3 p-md-4">
+          <Card.Body className="p-4">
             <Form onSubmit={handleCreateOrg}>
-              <Form.Group className="mb-3">
-                <Form.Label>Nome Organizzazione</Form.Label>
+              <Form.Group className="mb-4">
+                <Form.Label className="opacity-75 small text-uppercase">Nome Organizzazione</Form.Label>
                 <Form.Control 
                   type="text" 
-                  name="nome"
-                  placeholder="Inserisci nome organizzazione"
-                  value={newOrgData.nome}
-                  onChange={handleOrgChange}
-                  required
+                  name="nome" 
+                  className="glass-input text-white" 
+                  value={newOrgData.nome} 
+                  onChange={handleOrgChange} 
+                  required 
                 />
               </Form.Group>
               
-              <Form.Group className="mb-3">
-                <Form.Label>Numero WhatsApp</Form.Label>
+              <Form.Group className="mb-4">
+                <Form.Label className="opacity-75 small text-uppercase">Numero WhatsApp</Form.Label>
                 <Form.Control 
                   type="text" 
-                  name="numeroWhatsapp"
-                  placeholder="Formato: +39 123 4567890"
-                  value={newOrgData.numeroWhatsapp}
-                  onChange={handleOrgChange}
+                  name="numeroWhatsapp" 
+                  className="glass-input text-white placeholder-light" 
+                  placeholder="+39 123 4567890" 
+                  value={newOrgData.numeroWhatsapp} 
+                  onChange={handleOrgChange} 
                 />
-                <Form.Text className="text-muted">
+                <Form.Text className="text-light opacity-50 d-block mt-2">
                   Il numero WhatsApp deve essere già registrato su WhatsApp Business
                 </Form.Text>
               </Form.Group>
               
-              <Form.Group className="mb-3">
-                <Form.Label>Tono di Voce</Form.Label>
-                <Form.Select
-                  name="tonoDiVoce"
-                  value={newOrgData.tonoDiVoce}
+              <Form.Group className="mb-4">
+                <Form.Label className="opacity-75 small text-uppercase">Tono di Voce AI</Form.Label>
+                <Form.Select 
+                  name="tonoDiVoce" 
+                  className="glass-input text-white" 
+                  value={newOrgData.tonoDiVoce} 
                   onChange={handleOrgChange}
                 >
-                  <option value="Professionale e formale">Professionale e formale</option>
-                  <option value="Professionale e amichevole">Professionale e amichevole</option>
-                  <option value="Informale e casual">Informale e casual</option>
-                  <option value="Tecnico e dettagliato">Tecnico e dettagliato</option>
+                  <option value="Professionale e formale" style={{color:'black'}}>Professionale e formale</option>
+                  <option value="Professionale e amichevole" style={{color:'black'}}>Professionale e amichevole</option>
+                  <option value="Informale e casual" style={{color:'black'}}>Informale e casual</option>
+                  <option value="Tecnico e dettagliato" style={{color:'black'}}>Tecnico e dettagliato</option>
                 </Form.Select>
               </Form.Group>
               
-              <div className="d-flex justify-content-end">
-                <Button 
-                  variant="secondary" 
-                  className="me-2 rounded-pill"
-                  onClick={() => setShowNewOrgForm(false)}
-                  disabled={creatingOrg}
-                >
+              <div className="d-flex justify-content-end mt-4">
+                <Button variant="outline-light" className="me-2 rounded-pill px-4" onClick={() => setShowNewOrgForm(false)} disabled={creatingOrg}>
                   Annulla
                 </Button>
-                <Button 
-                  variant="primary" 
-                  type="submit" 
-                  className="rounded-pill"
-                  disabled={creatingOrg}
-                >
+                <Button className="btn-cta rounded-pill px-4 fw-bold" type="submit" disabled={creatingOrg}>
                   {creatingOrg ? (
-                    <>
-                      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                      Creazione in corso...
-                    </>
-                  ) : (
-                    <>Crea Organizzazione</>
-                  )}
+                    <><span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Creazione...</>
+                  ) : "Crea Organizzazione"}
                 </Button>
               </div>
             </Form>
@@ -159,82 +136,62 @@ const OrganizationsSection = ({ user, organizations, createOrganization, refresh
         </Card>
       )}
       
-      <Card className="mb-4">
-        <Card.Body className="p-3 p-md-4">
-          <div className="mb-4">
-            <InputGroup>
-              <Form.Control 
-                placeholder="Cerca organizzazioni..." 
-                aria-label="Cerca organizzazioni"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <Button variant="outline-secondary">
-                <FaSearch />
-              </Button>
-            </InputGroup>
-          </div>
+      <Card className="glass-card border-0 mb-5">
+        <Card.Body className="p-4">
+          <InputGroup className="mb-4">
+            <Form.Control 
+              className="glass-input text-white placeholder-light" 
+              placeholder="Cerca organizzazioni..." 
+              value={searchTerm} 
+              onChange={(e) => setSearchTerm(e.target.value)} 
+            />
+            <Button variant="primary" className="border-0"><FaSearch /></Button>
+          </InputGroup>
           
           <div className="table-responsive">
-            <Table hover>
+            <Table hover className="glass-table">
               <thead>
                 <tr>
                   <th>ID</th>
                   <th>Nome</th>
-                  <th>Numero WhatsApp</th>
+                  <th>WhatsApp</th>
                   <th>Tono di Voce</th>
-                  <th>Data Creazione</th>
+                  <th>Data</th>
                   <th>Azioni</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredOrgs.length > 0 ? (
                   filteredOrgs.map((org) => (
-                    <tr key={org.id}>
-                      <td>#{org.id}</td>
-                      <td>{org.nome}</td>
-                      <td>
-                        {org.numeroWhatsapp ? (
-                          <span>
-                            {org.numeroWhatsapp}{" "}
-                            <FaWhatsapp className="text-success" />
-                          </span>
-                        ) : (
-                          "Non impostato"
-                        )}
-                      </td>
-                      <td>{org.tonoDiVoce || "Non impostato"}</td>
-                      <td>{new Date(org.dataCreazione).toLocaleDateString()}</td>
-                      <td>
-                        <Button variant="outline-primary" size="sm" className="me-2">
-                          <FaEdit /> Modifica
-                        </Button>
-                        <Button 
-                          variant="outline-danger" 
-                          size="sm"
-                          onClick={() => handleDeleteOrg(org.id)}
-                        >
-                          <FaTrash /> Elimina
-                        </Button>
-                      </td>
-                    </tr>
+                  <tr key={org.id}>
+                    <td className="opacity-50">#{org.id}</td>
+                    <td className="fw-semibold">{org.nome}</td>
+                    <td>
+                      {org.numeroWhatsapp ? (
+                        <span className="badge bg-success rounded-pill px-3 py-2">
+                          <FaWhatsapp className="me-1"/> {org.numeroWhatsapp}
+                        </span>
+                      ) : (
+                        <span className="opacity-50">Non impostato</span>
+                      )}
+                    </td>
+                    <td className="opacity-75">{org.tonoDiVoce || "Default"}</td>
+                    <td className="opacity-75">{new Date(org.dataCreazione).toLocaleDateString()}</td>
+                    <td>
+                      <Button variant="outline-light" size="sm" className="me-2 rounded-pill opacity-75 hover-primary">
+                        <FaEdit />
+                      </Button>
+                      <Button variant="danger" size="sm" className="rounded-pill" onClick={() => handleDeleteOrg(org.id)}>
+                        <FaTrash />
+                      </Button>
+                    </td>
+                  </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="6" className="text-center py-5">
-                      <FaUsers size={40} className="text-muted mb-3" />
-                      <p>
-                        {searchTerm 
-                          ? "Nessuna organizzazione corrisponde alla ricerca" 
-                          : "Non ci sono organizzazioni disponibili."}
-                      </p>
-                      <Button 
-                        variant="primary" 
-                        className="rounded-pill"
-                        onClick={() => setShowNewOrgForm(true)}
-                      >
-                        <FaPlus className="me-2" /> Nuova Organizzazione
-                      </Button>
+                    <td colSpan="6" className="text-center py-5 opacity-50">
+                      <FaUsers size={40} className="mb-3" />
+                      <p>Nessuna organizzazione trovata.</p>
                     </td>
                   </tr>
                 )}
@@ -243,7 +200,7 @@ const OrganizationsSection = ({ user, organizations, createOrganization, refresh
           </div>
         </Card.Body>
       </Card>
-    </>
+    </div>
   );
 };
 

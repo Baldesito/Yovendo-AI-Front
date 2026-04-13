@@ -1,9 +1,11 @@
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import autoprefixer from 'autoprefixer';
-
+//eslint-disable-next-line
 export default defineConfig(({ command, mode }) => {
-  // Carica le variabili d'ambiente in base all'ambiente corrente
+
+  // Carica le variabili d'ambiente in base all'ambiente corrente  
+  //eslint-disable-next-line
   const env = loadEnv(mode, process.cwd());
   
   return {

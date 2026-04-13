@@ -131,7 +131,7 @@ const DashboardSection = ({ statistics, conversations, documents, changeSection 
             <Card.Body className="p-4">
               <div className="d-flex align-items-center mb-4">
                 <FaChartLine className="me-3 text-primary fs-4" />
-                <h5 className="mb-0 fw-bold">Analisi Performance</h5>
+                <h5 className="mb-0 text-secondary fw-bold">Analisi Performance</h5>
               </div>
               <div style={{ height: "300px" }}>
                 {isBrowser && <Bar data={performanceData} options={chartOptions} ref={barChartRef} />}
@@ -144,7 +144,7 @@ const DashboardSection = ({ statistics, conversations, documents, changeSection 
             <Card.Body className="p-4">
               <div className="d-flex align-items-center mb-4">
                 <FaChartLine className="me-3 text-primary fs-4" />
-                <h5 className="mb-0 fw-bold">Trend Conversazioni</h5>
+                <h5 className="mb-0 text-secondary fw-bold">Trend Conversazioni</h5>
               </div>
               <div style={{ height: "300px" }}>
                 {isBrowser && <Line data={conversationTrendData} options={lineChartOptions} ref={lineChartRef} />}
